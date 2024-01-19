@@ -62,6 +62,6 @@ class BaseUser:
         return verify_integer(integer=self._legacy.get('statuses_count'))
 
     @property
-    def is_verified(self) -> bool:
+    def _is_verified(self) -> bool:
         """Boolean indicating whether the user is verified."""
         return verify_boolean(boolean=self._legacy.get('verified'))
