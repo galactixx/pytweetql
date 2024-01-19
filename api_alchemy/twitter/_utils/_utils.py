@@ -68,63 +68,89 @@ def verify_datetime(created: Any) -> Optional[str]:
         )
         return created
 
-def return_value(obj: ResponseKey, key: str) -> Any:
+def return_value(source: ResponseKey, key: str) -> Any:
     """
-    Should be used if expecting a singular non-(list, tuple, dict) value.
+    Should be used if you are pulling a value at the endpoint of parsing.
 
     Args:
-        obj (ResponseKey): A list or dictionary.
+        source (ResponseKey): A list or dictionary.
 
     Returns:
-        Any: Item pulled from dictionary. 
+        Any: Item pulled from object. 
     """
-    found_key = find_key(obj=obj, key=key)
+    found_key = search_key(source=source, key=key)
     if found_key:
         return found_key[0]
 
-def empty_dictionary(obj: ResponseKey) -> bool:
+def extract_dicts_from_list(source: list) -> List[dict]:
+    """
+    Recursive function to extract the top-level dictionaries into one list
+    from nested lists.
+
+    Args:
+        source (list): A list of dictionaries.
+
+    Returns:
+        List[dict]: A list with the found dictionary or an empty list.
+    """
+    def helper(source: list, target: list) -> list:
+        if isinstance(source, dict):
+            target.append(source)
+            
+        if isinstance(source, list):
+            for item in source:
+                target.extend(helper(item, []))
+        return target
+    
+    return helper(source=source, target=[])
+
+def empty_dictionary(source: ResponseKey) -> bool:
     """
     A recursive function to determine if dictionary is empty.
 
     Args:
-        obj (ResponseKey): A list or dictionary.
+        source (ResponseKey): A list or dictionary.
 
     Returns:
-        bool: Whether the dictionary is empty.
+        bool: Whether the object is empty.
     """
-    if isinstance(obj, dict):
-        return all(empty_dictionary(value) for _, value in obj.items())
-    elif isinstance(obj, list):
-        return all(empty_dictionary(element) for element in obj)
+    if isinstance(source, dict):
+        return all(empty_dictionary(value) for _, value in source.items())
+    elif isinstance(source, list):
+        return all(empty_dictionary(element) for element in source)
     else:
-        return not obj
+        return not source
 
-def find_key(obj: ResponseKey, key: str) -> List[dict]:
+def search_key(source: ResponseKey, key: str) -> List[dict]:
     """
     A recursive function to find all values of a given key within a
     nested dict or list of dicts.
 
     Args:
-        obj (ResponseKey): A list or dictionary.
+        source (ResponseKey): A list or dictionary.
 
     Returns:
         List[dict]: A list with the found dictionary or an empty list.
     """
-    def helper(obj: ResponseKey, key: str, lst: list) -> list:
-        if not obj:
-            return lst
+    def helper(source: ResponseKey, key: str, target: list) -> list:
+        if not source:
+            return target
 
-        if isinstance(obj, list):
-            for e in obj:
-                lst.extend(helper(e, key, []))
-            return lst
+        if isinstance(source, list):
+            for e in source:
+                target.extend(helper(e, key, []))
+            return target
 
-        if isinstance(obj, dict) and obj.get(key):
-            lst.append(obj[key])
+        if isinstance(source, dict) and source.get(key):
+            value = source[key]
+            if isinstance(value, list):
+                target.extend(value)
+            else:
+                target.append(value)
 
-        if isinstance(obj, dict) and obj:
-            for k in obj:
-                lst.extend(helper(obj[k], key, []))
-        return lst
+        if isinstance(source, dict) and source:
+            for k in source:
+                target.extend(helper(source[k], key, []))
+        return target
 
-    return helper(obj, key, [])
+    return helper(source, key, [])

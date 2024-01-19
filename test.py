@@ -1,4 +1,4 @@
-from api_alchemy.twitter.tweet import Tweets
+from api_alchemy.twitter.parsing.tweet import Tweets
 
 import json
  
@@ -8,8 +8,9 @@ with open('sample.json', 'r') as openfile:
     # Reading from json file
     json_object = json.load(openfile)
 
-tweet = Tweets(response=json_object)
+tweets = Tweets(response=json_object)
+print(tweets.num_tweets)
 
-for twt in tweet._tweets:
+for twt in tweets._tweets:
     print(twt._tweet)
     break
