@@ -1,4 +1,4 @@
-from api_alchemy.twitter._utils._data_structures import ValidationError
+from omni_parse.twitter._utils._data_structures import ValidationError
 
 error_response_none = ValidationError(
     code=100,
@@ -18,5 +18,5 @@ error_invalid_parser = ValidationError(
 )
 error_response_empty = ValidationError(
     code=104,
-    error='All response fields are empty.'
+    error='All response fields are empty'
 )

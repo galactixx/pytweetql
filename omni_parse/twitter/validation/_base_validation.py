@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 import json
 from typing import List
 
-from api_alchemy.twitter.errors import *
-from api_alchemy.twitter._utils._data_structures import ValidationError
-from api_alchemy.twitter.typing import (
+from omni_parse.twitter._utils._data_structures import ValidationError
+from omni_parse.twitter.errors import *
+from omni_parse.twitter.typing import (
     APIResponse,
     ParseStatus
 )

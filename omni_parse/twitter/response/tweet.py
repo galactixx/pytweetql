@@ -1,12 +1,12 @@
 from typing import List
 
-from api_alchemy.twitter.response._base_tweet import BaseTweet
-from api_alchemy.twitter._utils._utils import search_key
-from api_alchemy.twitter._utils._data_structures import (
+from omni_parse.twitter.response._base_tweet import BaseTweet
+from omni_parse.twitter._utils._utils import search_key
+from omni_parse.twitter._utils._data_structures import (
     TweetInfo, 
     ValidationError
 )
-from api_alchemy.twitter.typing import (
+from omni_parse.twitter.typing import (
     APIResponse,
     ParseStatus
 )
@@ -137,6 +137,16 @@ class Tweets:
         else:
             self._tweets = []
 
+    @property
+    def tweets(self) -> List[Tweet]:
+        """Returns all the parsed tweets."""
+        return self._tweets
+
+    @property
+    def num_tweets(self) -> int:
+        """The number of tweets parsed in response."""
+        return len(self._tweets)
+    
     def _parse_tweets(self) -> List[Tweet]:
         """
         Parse each individual tweet detail from response and load into list.
@@ -172,13 +182,3 @@ class Tweets:
                     )
 
         return parsed_tweets
-
-    @property
-    def tweets(self) -> List[Tweet]:
-        """Returns all the parsed tweets."""
-        return self._tweets
-
-    @property
-    def num_tweets(self) -> int:
-        """The number of tweets parsed in response."""
-        return len(self._tweets)

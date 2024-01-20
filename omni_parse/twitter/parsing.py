@@ -1,7 +1,7 @@
-from api_alchemy.twitter.typing import APIResponse
-from api_alchemy.twitter.response.user import Users
-from api_alchemy.twitter.response.tweet import Tweets
-from api_alchemy.twitter.validation.graphql_validation import GraphQLValidation
+from omni_parse.twitter.typing import APIResponse
+from omni_parse.twitter.response.user import Users
+from omni_parse.twitter.response.tweet import Tweets
+from omni_parse.twitter.validation.graphql_validation import GraphQLValidation
 
 def parse_users(response: APIResponse) -> Users:
     """

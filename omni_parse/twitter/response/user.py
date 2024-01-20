@@ -1,12 +1,12 @@
 from typing import List
 
-from api_alchemy.twitter.response._base_user import BaseUser
-from api_alchemy.twitter._utils._utils import search_key
-from api_alchemy.twitter._utils._data_structures import (
+from omni_parse.twitter.response._base_user import BaseUser
+from omni_parse.twitter._utils._utils import search_key
+from omni_parse.twitter._utils._data_structures import (
     UserInfo,
     ValidationError
 )
-from api_alchemy.twitter.typing import (
+from omni_parse.twitter.typing import (
     APIResponse,
     ParseStatus
 )
@@ -117,6 +117,16 @@ class Users:
         else:
             self._users = []
 
+    @property
+    def users(self) -> List[User]:
+        """Returns all the parsed users."""
+        return self._users
+
+    @property
+    def num_users(self) -> int:
+        """The number of users parsed in response."""
+        return len(self._users)
+
     def _parse_users(self) -> List[User]:
         """
         Parse each individual user detail from response and load into list.
@@ -143,13 +153,3 @@ class Users:
                     )
 
         return parsed_users
-    
-    @property
-    def users(self) -> List[User]:
-        """Returns all the parsed users."""
-        return self._users
-
-    @property
-    def num_users(self) -> int:
-        """The number of users parsed in response."""
-        return len(self._users)

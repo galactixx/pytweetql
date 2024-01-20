@@ -2,8 +2,8 @@ from typing import Any, List, Optional
 from datetime import datetime
 import logging
 
-from api_alchemy._logging import logging_config
-from api_alchemy.twitter.typing import ResponseKey
+from omni_parse._logging import logging_config
+from omni_parse.twitter.typing import ResponseKey
 
 logger = logging.getLogger(__name__)
 logging_config(logger=logger)

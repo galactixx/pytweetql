@@ -1,4 +1,4 @@
-from api_alchemy.twitter._utils._utils import (
+from omni_parse.twitter._utils._utils import (
     return_value,
     verify_boolean,
     verify_datetime,
