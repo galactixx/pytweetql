@@ -1,12 +1,14 @@
 from typing import List
 
-from api_alchemy.twitter.typing import APIResponse
-from api_alchemy.twitter._utils._data_structures import TweetInfo
-from api_alchemy.twitter.parsing._base_tweet import BaseTweet
+from api_alchemy.twitter.response._base_tweet import BaseTweet
 from api_alchemy.twitter._utils._utils import search_key
-from api_alchemy.twitter._utils._validation import (
-    validate_response,
-    validate_response_tweet
+from api_alchemy.twitter._utils._data_structures import (
+    TweetInfo, 
+    ValidationError
+)
+from api_alchemy.twitter.typing import (
+    APIResponse,
+    ParseStatus
 )
 
 _PROMOTED_TAGS = ['promoted-tweet', 'who-to-follow']
@@ -113,16 +115,27 @@ class Tweets:
 
     Args:
         response (APIResponse): The response from a Twitter API.
+        status (ParseStatus): The status of the parsing.
         remove_promotions (bool): Whether to remove promoted tweets from parsing.
+        errors (dict): The errors associated with a failure status.
     """
-    def __init__(self, response: APIResponse, remove_promotions: bool = True):
-        self._response = validate_response(response=response)
+    def __init__(
+        self,
+        response: APIResponse,
+        status: ParseStatus,
+        remove_promotions: bool,
+        error: ValidationError
+    ):
+        self._response = response
         self._remove_promotions = remove_promotions
 
-        # Validate that it is a tweet response
-        validate_response_tweet(response=self._response)
+        self.status = status
+        self.error = error
 
-        self._tweets = self._parse_tweets()
+        if self.status == 'success':
+            self._tweets = self._parse_tweets()
+        else:
+            self._tweets = []
 
     def _parse_tweets(self) -> List[Tweet]:
         """

@@ -1,12 +1,14 @@
 from typing import List
 
-from api_alchemy.twitter.typing import APIResponse
-from api_alchemy.twitter._utils._data_structures import UserInfo
-from api_alchemy.twitter.parsing._base_user import BaseUser
+from api_alchemy.twitter.response._base_user import BaseUser
 from api_alchemy.twitter._utils._utils import search_key
-from api_alchemy.twitter._utils._validation import (
-    validate_response,
-    validate_response_user
+from api_alchemy.twitter._utils._data_structures import (
+    UserInfo,
+    ValidationError
+)
+from api_alchemy.twitter.typing import (
+    APIResponse,
+    ParseStatus
 )
 
 class User(BaseUser):
@@ -99,13 +101,21 @@ class Users:
     Args:
         response (APIResponse): The response from a Twitter API.
     """
-    def __init__(self, response: APIResponse):
-        self._response = validate_response(response=response)
+    def __init__(
+        self,
+        response: APIResponse,
+        status: ParseStatus,
+        error: ValidationError
+    ):
+        self._response = response
 
-        # Validate that it is a user response
-        validate_response_user(response=self._response)
+        self.status = status
+        self.error = error
 
-        self._users = self._parse_users()
+        if self.status == 'success':
+            self._users = self._parse_users()
+        else:
+            self._users = []
 
     def _parse_users(self) -> List[User]:
         """

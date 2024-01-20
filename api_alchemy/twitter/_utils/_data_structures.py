@@ -1,6 +1,18 @@
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
+class ValidationError:
+    """
+    Specific and type of error occurring during validation.
+    
+    Attributes:
+        code (int): The error code.
+        error (str): Description of the error.
+    """
+    code: int
+    error: str
+
+@dataclass(frozen=True)
 class UserInfo:
     """
     Dataclass of info pulled from user profile.
