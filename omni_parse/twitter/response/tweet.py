@@ -41,7 +41,7 @@ class Tweet(BaseTweet):
             tweet_id=self._tweet_id,
             created=self._created_date,
             content=self._content,
-            language=self._langugage,
+            language=self._language,
             is_quote=self._is_quote,
             is_retweet=self._is_retweet,
             quote_count=self._quote_count,
@@ -65,7 +65,7 @@ class Tweet(BaseTweet):
         return self._tweet.user_screen_name
     
     @property
-    def twet_id(self) -> str:
+    def tweet_id(self) -> str:
         """The tweet ID."""
         return self._tweet.tweet_id
     

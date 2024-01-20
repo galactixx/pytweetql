@@ -83,7 +83,7 @@ class GraphQLValidation(BaseValidation):
             if empty_dictionary(source=self._response):
                 self._add_error(error=error_response_empty)
 
-            objects = search_key(self, source=self._response, key='tweet_results')
+            objects = search_key(source=self._response, key='tweet_results')
             if not objects:
                 self._add_error(error=error_invalid_parser)
 

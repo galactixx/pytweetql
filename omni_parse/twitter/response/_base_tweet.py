@@ -50,7 +50,7 @@ class BaseTweet:
         return self._legacy.get('full_text')
 
     @property
-    def _langugage(self) -> str:
+    def _language(self) -> str:
         """The language of the text content."""
         return self._legacy.get('lang')
     
