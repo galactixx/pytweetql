@@ -2,13 +2,11 @@ from typing import List
 
 from omni_parse.twitter.response._base_user import BaseUser
 from omni_parse.twitter._utils._utils import search_key
+from omni_parse.twitter.typing import APIResponse
+from omni_parse.twitter.validation._base_validation import BaseStatus
 from omni_parse.twitter._utils._data_structures import (
-    UserInfo,
-    ValidationError
-)
-from omni_parse.twitter.typing import (
-    APIResponse,
-    ParseStatus
+    Status,
+    UserInfo
 )
 
 class User(BaseUser):
@@ -94,25 +92,23 @@ class User(BaseUser):
         """Boolean indicating whether the user is verified."""
         return self._user.is_verified
 
-class Users:
+class Users(BaseStatus):
     """
     Parsing for a user-related API response.
 
     Args:
         response (APIResponse): The response from a Twitter API.
+        status (Status): The status of the parsing.
     """
     def __init__(
         self,
         response: APIResponse,
-        status: ParseStatus,
-        error: ValidationError
+        status: Status
     ):
+        super().__init__(status=status)
         self._response = response
 
-        self.status = status
-        self.error = error
-
-        if self.status == 'success':
+        if self.status_code == 200:
             self._users = self._parse_users()
         else:
             self._users = []

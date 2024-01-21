@@ -1,7 +1,7 @@
 from typing import List
 
-from omni_parse.twitter.errors import *
-from omni_parse.twitter._utils._data_structures import ValidationError
+from omni_parse.twitter.status import *
+from omni_parse.twitter._utils._data_structures import Status
 from omni_parse.twitter.validation._base_validation import BaseValidation
 from omni_parse.twitter.typing import APIResponse
 from omni_parse.twitter._utils._utils import (
@@ -26,7 +26,7 @@ class GraphQLValidation(BaseValidation):
         """
         Validate whether the GraphQL response.
         """
-        if self.status == 'success':
+        if self.status_code == 200:
             response = self._response.copy()
             
             # If response is a dictionary, convert to list for easy manipulation
@@ -50,17 +50,17 @@ class GraphQLValidation(BaseValidation):
                 if not response_extracted:
                     if errors:
                         errors_messages = '\n'.join(message for message in errors)
-                        self._add_error(
-                            error=ValidationError(
-                                code=105,
-                                error=f'API request error: {errors_messages}'
+                        self._update_status(
+                            status=Status(
+                                status_code=502,
+                                message=f'API request error: {errors_messages}'
                             )
                         )
                     else:
-                        self._add_error(
-                            error=ValidationError(
-                                code=105,
-                                error=f'API request error: Unknown error'
+                        self._update_status(
+                            error=Status(
+                                status_code=502,
+                                message=f'API request error: Unknown error'
                             )
                         )
                     return
@@ -73,27 +73,27 @@ class GraphQLValidation(BaseValidation):
                 if _response:
                     self._response = _response
                     return
-            self._add_error(error=error_format_invalid)
+            self._update_status(status=error_format_invalid)
     
     def validate_response_tweet(self) -> None:
         """
         Validate that the response is tweet data.
         """
-        if self.status == 'success':
+        if self.status_code == 200:
             if empty_dictionary(source=self._response):
-                self._add_error(error=error_response_empty)
+                self._update_status(status=error_response_empty)
 
             objects = search_key(source=self._response, key='tweet_results')
             if not objects:
-                self._add_error(error=error_invalid_parser)
+                self._update_status(status=error_invalid_parser)
 
     def validate_response_user(self) -> None:
         """
         Validate that the response is user data.
         """
-        if self.status == 'success':
+        if self.status_code == 'success':
             if empty_dictionary(source=self._response):
-                self._add_error(error=error_response_empty)
+                self._update_status(status=error_response_empty)
                 return
 
             if isinstance(self._response, dict):
@@ -107,4 +107,4 @@ class GraphQLValidation(BaseValidation):
             user_objects = search_key(source=self._response, key='user_results')
             tweet_objects = search_key(source=self._response, key='tweet_results')
             if not user_objects or (user_objects and tweet_objects):
-                self._add_error(error=error_invalid_parser)
+                self._update_status(status=error_invalid_parser)

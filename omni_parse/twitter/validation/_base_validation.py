@@ -2,12 +2,34 @@ from abc import ABC, abstractmethod
 import json
 from typing import List
 
-from omni_parse.twitter._utils._data_structures import ValidationError
-from omni_parse.twitter.errors import *
-from omni_parse.twitter.typing import (
-    APIResponse,
-    ParseStatus
-)
+from omni_parse.twitter._utils._data_structures import Status
+from omni_parse.twitter.status import *
+from omni_parse.twitter.typing import APIResponse
+
+class BaseStatus:
+    """
+    Base methods and functionality for accessing response status.
+
+    Args:
+        status (Status): The current status of the parsing.
+    """
+    def __init__(self, status: Status):
+        self._status = status
+
+    @property
+    def status_message(self) -> dict:
+        """Return the message associated with the status."""
+        return self._status.message
+    
+    @property
+    def status_code(self) -> str:
+        """Return the code associated with the status."""
+        return self._status.status_code
+    
+    @property
+    def status(self) -> str:
+        """Return the current status."""
+        return self._status
 
 class _BaseValidation(ABC):
     """
@@ -33,7 +55,7 @@ class _BaseValidation(ABC):
         Validate the response.
         """
 
-class BaseValidation(_BaseValidation):
+class BaseValidation(BaseStatus, _BaseValidation):
     """
     Functionality to run validation on response.
 
@@ -41,45 +63,33 @@ class BaseValidation(_BaseValidation):
         response (APIResponse): The response from a Twitter API.
     """
     def __init__(self, response: APIResponse):
-        self._error: ValidationError = None
-        self._status: ParseStatus = 'success'
+        super().__init__(status=success_response)
         self._response: List[dict] = self._initial_validation(response=response)
-
-    @property
-    def error(self) -> dict:
-        """Return the error that occurred."""
-        return self._error
 
     @property
     def response(self) -> dict:
         """Return the parsed response."""
         return self._response
-    
-    @property
-    def status(self) -> str:
-        """Return the current parse status."""
-        return self._status
 
-    def _add_error(self, error: ValidationError) -> None:
+    def _update_status(self, status: Status) -> None:
         """
         Register and track the validation error that occurs.
 
         Args:
-            error (ValidationError): The error.
+            error (Status): The error.
         """
-        self._status = 'failure'
-        self._error = error
+        self._status = status
 
     def _initial_validation(self, response: APIResponse) -> APIResponse:
         """
         """
         if response is None:
-            self._add_error(error=error_response_none)
+            self._update_status(status=error_response_none)
 
         if isinstance(response, str):
             try:
                 if isinstance(response, str):
                     return json.loads(response)
             except json.JSONDecodeError:
-                self._add_error(error=error_invalid_json)
+                self._update_status(status=error_invalid_json)
         return response

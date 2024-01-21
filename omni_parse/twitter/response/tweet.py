@@ -2,13 +2,11 @@ from typing import List
 
 from omni_parse.twitter.response._base_tweet import BaseTweet
 from omni_parse.twitter._utils._utils import search_key
+from omni_parse.twitter.typing import APIResponse
+from omni_parse.twitter.validation._base_validation import BaseStatus
 from omni_parse.twitter._utils._data_structures import (
-    TweetInfo, 
-    ValidationError
-)
-from omni_parse.twitter.typing import (
-    APIResponse,
-    ParseStatus
+    Status,
+    TweetInfo
 )
 
 _PROMOTED_TAGS = ['promoted-tweet', 'who-to-follow']
@@ -109,30 +107,26 @@ class Tweet(BaseTweet):
         """Boolean indicating whether it is a retweet."""
         return self._tweet.is_retweet
 
-class Tweets:
+class Tweets(BaseStatus):
     """
     Parsing for a tweet-related API response.
 
     Args:
         response (APIResponse): The response from a Twitter API.
-        status (ParseStatus): The status of the parsing.
         remove_promotions (bool): Whether to remove promoted tweets from parsing.
-        errors (dict): The errors associated with a failure status.
+        status (Status): The status of the parsing.
     """
     def __init__(
         self,
         response: APIResponse,
-        status: ParseStatus,
         remove_promotions: bool,
-        error: ValidationError
+        status: Status
     ):
+        super().__init__(status=status)
         self._response = response
         self._remove_promotions = remove_promotions
 
-        self.status = status
-        self.error = error
-
-        if self.status == 'success':
+        if self.status_code == 200:
             self._tweets = self._parse_tweets()
         else:
             self._tweets = []

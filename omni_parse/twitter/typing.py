@@ -1,6 +1,4 @@
-from typing import Literal, Union
+from typing import Union
 
 APIResponse = Union[str, list, dict]
 ResponseKey = Union[dict, list]
-
-ParseStatus = Literal['success', 'failure']

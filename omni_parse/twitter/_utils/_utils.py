@@ -74,6 +74,7 @@ def return_value(source: ResponseKey, key: str) -> Any:
 
     Args:
         source (ResponseKey): A list or dictionary.
+        key (str): The key to search for.
 
     Returns:
         Any: Item pulled from object. 
@@ -128,6 +129,7 @@ def search_key(source: ResponseKey, key: str) -> List[dict]:
 
     Args:
         source (ResponseKey): A list or dictionary.
+        key (str): The key to search for.
 
     Returns:
         List[dict]: A list with the found dictionary or an empty list.

@@ -18,8 +18,7 @@ def parse_users(response: APIResponse) -> Users:
 
     return Users(
         response=validation.response,
-        status=validation.status,
-        error=validation.error
+        status=validation.status
     )
 
 def parse_tweets(response: APIResponse, remove_promotions: bool = True) -> Tweets:
@@ -37,7 +36,6 @@ def parse_tweets(response: APIResponse, remove_promotions: bool = True) -> Tweet
 
     return Tweets(
         response=validation.response,
-        status=validation.status,
         remove_promotions=remove_promotions,
-        error=validation.error
+        status=validation.status
     )
