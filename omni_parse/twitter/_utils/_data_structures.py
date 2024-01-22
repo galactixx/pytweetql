@@ -13,6 +13,26 @@ class Status:
     message: str
 
 @dataclass(frozen=True)
+class ListInfo:
+    """
+    Dataclass of info pulled from list profile.
+
+    Attributes:
+        name (str): The list name.
+        description (str): The list description.
+        list_id (str): The list ID.
+        member_count (int): The number of members in the list.
+        is_private (bool): Boolean indicating whether the list is private.
+        is_following (bool): Boolean indicating whether the user is following the list.
+    """
+    name: str
+    description: str
+    list_id: str
+    member_count: int
+    is_private: bool
+    is_following: bool
+
+@dataclass(frozen=True)
 class UserInfo:
     """
     Dataclass of info pulled from user profile.

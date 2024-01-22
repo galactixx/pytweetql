@@ -55,26 +55,26 @@ class BaseTweet:
         return self._legacy.get('lang')
     
     @property
-    def _quote_count(self) -> str:
+    def _quote_count(self) -> int:
         """The number of times the tweet has been quoted."""
         return verify_integer(integer=self._legacy.get('quote_count'))
         
     @property
-    def _reply_count(self) -> str:
+    def _reply_count(self) -> int:
         """The number of replies on the tweet."""
         return verify_integer(integer=self._legacy.get('reply_count'))
         
     @property
-    def _retweet_count(self) -> str:
+    def _retweet_count(self) -> int:
         """The number of times the tweet has been retweeted."""
         return verify_integer(integer=self._legacy.get('retweet_count'))
         
     @property
-    def _is_quote(self) -> str:
+    def _is_quote(self) -> bool:
         """Boolean indicating whether it is a quoted tweet."""
         return verify_boolean(boolean=self._legacy.get('is_quote_status'))
         
     @property
-    def _is_retweet(self) -> str:
+    def _is_retweet(self) -> bool:
         """Boolean indicating whether it is a retweet."""
         return verify_boolean(boolean=self._legacy.get('retweeted'))

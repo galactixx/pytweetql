@@ -48,6 +48,11 @@ class Tweet(BaseTweet):
         )
 
     @property
+    def tweet(self) -> TweetInfo:
+        """The entire TweetInfo dataclass"""
+        return self._tweet
+
+    @property
     def user_id(self) -> str:
         """The user ID of the Twitter account that posted the tweet."""
         return self._tweet.user_id
@@ -118,7 +123,7 @@ class Tweets(BaseStatus):
     """
     def __init__(
         self,
-        response: APIResponse,
+        response: List[dict],
         remove_promotions: bool,
         status: Status
     ):
@@ -150,8 +155,7 @@ class Tweets(BaseStatus):
         """
         parsed_tweets = []
 
-        entries = search_key(source=self._response, key='entries')
-        for entry in entries:
+        for entry in self._response:
             entry_result = search_key(source=entry, key='result')
             if entry_result:
                 entry_result = entry_result[0]

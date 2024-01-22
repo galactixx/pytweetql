@@ -24,3 +24,7 @@ error_response_empty = Status(
     status_code=400,
     message='All response fields are empty'
 )
+error_api_unknown = Status(
+    status_code=502,
+    message=f'API request error: Unknown error'
+)

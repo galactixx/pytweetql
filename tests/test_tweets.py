@@ -9,6 +9,12 @@ parameters = [
     200,
     'Success',
     3
+    ),
+    (
+    './tests/data/tweet_create_response.json',
+    200,
+    'Success',
+    1
     )
 ]
 

@@ -24,7 +24,7 @@ class User(BaseUser):
 
     def _parse_user(self) -> UserInfo:
         """
-        Parse user dictionariess into structured format.
+        Parse user dictionaries into structured format.
 
         Returns:
             UserInfo: The dataclass which holds all relevant user detail.
@@ -102,7 +102,7 @@ class Users(BaseStatus):
     """
     def __init__(
         self,
-        response: APIResponse,
+        response: List[dict],
         status: Status
     ):
         super().__init__(status=status)
@@ -132,8 +132,7 @@ class Users(BaseStatus):
         """
         parsed_users = []
 
-        entries = search_key(source=self._response, key='entries')
-        for entry in entries:
+        for entry in self._response:
             user_result = search_key(source=entry, key='user_results')
             entry_result = search_key(source=user_result, key='result')
             if entry_result:
