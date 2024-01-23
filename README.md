@@ -1,7 +1,7 @@
 # pytweetql
-pytweetql is a versatile Python package designed for developers who work with the Twitter GraphQL API
+pytweetql is a simple Python package designed for developers who work with the Twitter GraphQL API
 
-Currently it is built to parse tweet, user, and list GET responses from the Twitter GraphQL API. Will most likely expand POST responses, all Twitter APIs (v1.1 and v2) and then possibly add other APIs (Spotify, Instagram, etc..).
+Currently it is built to parse tweet, user, and list GET responses from the Twitter GraphQL API. Will most likely expand to include POST responses, all Twitter APIs (v1.1 and v2) and then possibly add other APIs (Spotify, Instagram, etc..).
 
 ## How it Works
 
