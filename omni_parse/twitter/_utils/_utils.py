@@ -26,6 +26,7 @@ def verify_boolean(boolean: Any) -> Optional[bool]:
         elif boolean.lower() == 'false':
             return False
 
+
 def verify_integer(integer: Any) -> int:
     """
     Verify expected integer value type. If not an integer will return None.
@@ -50,6 +51,7 @@ def verify_integer(integer: Any) -> int:
         except ValueError:
             return
 
+
 def verify_datetime(created: Any) -> Optional[str]:
     """
     Verfiy format of created date provided in response.
@@ -68,6 +70,7 @@ def verify_datetime(created: Any) -> Optional[str]:
         )
         return created
 
+
 def return_value(source: ResponseKey, key: str) -> Any:
     """
     Should be used if you are pulling a value at the endpoint of parsing.
@@ -82,6 +85,7 @@ def return_value(source: ResponseKey, key: str) -> Any:
     found_key = search_key(source=source, key=key)
     if found_key:
         return found_key[0]
+
 
 def extract_dicts_from_list(source: list) -> List[dict]:
     """
@@ -105,6 +109,7 @@ def extract_dicts_from_list(source: list) -> List[dict]:
     
     return helper(source=source, target=[])
 
+
 def empty_dictionary(source: ResponseKey) -> bool:
     """
     A recursive function to determine if dictionary is empty.
@@ -121,6 +126,7 @@ def empty_dictionary(source: ResponseKey) -> bool:
         return all(empty_dictionary(element) for element in source)
     else:
         return not source
+
 
 def search_key(source: ResponseKey, key: str) -> List[dict]:
     """

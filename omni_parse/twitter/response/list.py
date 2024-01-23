@@ -1,6 +1,6 @@
 from typing import List
 
-from omni_parse.twitter.response._base_list import BaseList
+from omni_parse.twitter.response._base_response import BaseList
 from omni_parse.twitter.validation._base_validation import BaseStatus
 from omni_parse.twitter._utils._data_structures import (
     Status,
@@ -37,7 +37,7 @@ class TwitterList(BaseList):
     
     @property
     def twitter_list(self) -> ListInfo:
-        """The entire ListInfo dataclass"""
+        """The entire ListInfo dataclass."""
         return self._list
     
     @property
@@ -69,6 +69,7 @@ class TwitterList(BaseList):
     def is_following(self) -> bool:
         """Boolean indicating whether the user is following the list."""
         return self._list.is_following
+
 
 class TwitterLists(BaseStatus):
     """

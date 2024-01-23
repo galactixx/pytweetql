@@ -1,8 +1,7 @@
 from typing import List
 
-from omni_parse.twitter.response._base_tweet import BaseTweet
+from omni_parse.twitter.response._base_response import BaseTweet
 from omni_parse.twitter._utils._utils import search_key
-from omni_parse.twitter.typing import APIResponse
 from omni_parse.twitter.validation._base_validation import BaseStatus
 from omni_parse.twitter._utils._data_structures import (
     Status,
@@ -49,7 +48,7 @@ class Tweet(BaseTweet):
 
     @property
     def tweet(self) -> TweetInfo:
-        """The entire TweetInfo dataclass"""
+        """The entire TweetInfo dataclass."""
         return self._tweet
 
     @property
@@ -111,6 +110,7 @@ class Tweet(BaseTweet):
     def is_retweet(self) -> bool:
         """Boolean indicating whether it is a retweet."""
         return self._tweet.is_retweet
+
 
 class Tweets(BaseStatus):
     """

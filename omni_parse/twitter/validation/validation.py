@@ -2,8 +2,11 @@ from typing import List
 
 from omni_parse.twitter.status import *
 from omni_parse.twitter._constants import *
-from omni_parse.twitter._utils._data_structures import Status
 from omni_parse.twitter.typing import APIResponse
+from omni_parse.twitter.response.error import (
+    Error,
+    format_errors
+)
 from omni_parse.twitter.validation._base_validation import (
     BaseValidation,
     status_code_check
@@ -14,7 +17,7 @@ from omni_parse.twitter._utils._utils import (
     search_key
 )
 
-class GraphQLValidation(BaseValidation):
+class Validation(BaseValidation):
     """
     Functionality to run validation on response.
 
@@ -29,8 +32,30 @@ class GraphQLValidation(BaseValidation):
         if empty_dictionary(source=self.response):
             self.status = error_response_empty
 
+    @staticmethod
+    def detect_errors(response: List[dict]) -> List[Error]:
+        """
+        Detect any API generated errors in response.
+
+        Args:
+            response (List[dict]): The semi-parsed API response.
+
+        Returns:
+            List[Error]: Any errors found in reponse, each as Error class.
+        """
+        errors = []
+        for item in response[:]:
+            messages: List[dict] = item.get('errors')
+            if messages:
+                response.remove(item)
+                for message in messages:
+                    error = Error(message=message)
+                    if error.message:
+                        errors.append(error)
+        return errors
+
     @status_code_check
-    def _search_entries(self, keys: list, types: list, results: str = None) -> None:
+    def _search_entries(self, keys: list, types: list) -> None:
         """
         Search through entries to confirm type of data retrieved.
         
@@ -39,8 +64,8 @@ class GraphQLValidation(BaseValidation):
         """
         entries = search_key(source=self.response, key='entries')
         if entries:
-            entry_id: str = entries[0].get('entryId')
-            if entry_id is not None:
+            entry_id = entries[0].get('entryId')
+            if isinstance(entry_id, str):
                 entry_type = entry_id.split('-')[0]
                 if entry_type not in types:
                     self.status = error_invalid_parser
@@ -66,27 +91,15 @@ class GraphQLValidation(BaseValidation):
         if isinstance(response, dict):
             response = [response]
 
-        # Check if the API response resulted in an error
         if isinstance(response, list):
             _response = []
-            errors = []
             response_extracted = extract_dicts_from_list(source=response)
 
-            for item in response_extracted[:]:
-                messages: List[dict] = item.get('errors')
-                if messages:
-                    response_extracted.remove(item)
-                    for error in messages:
-                        message = error.get('message')
-                        if message:
-                            errors.append(message)
+            # Check if the API response resulted in an error
+            errors = Validation.detect_errors(response=response_extracted)
             if not response_extracted:
                 if errors:
-                    errors_messages = '\n'.join(message for message in errors)
-                    self.status = Status(
-                        status_code=502,
-                        message=f'API request error: {errors_messages}'
-                    )
+                    self.status = format_errors(errors=errors)
                 else:
                     self.status = error_api_unknown
                 return

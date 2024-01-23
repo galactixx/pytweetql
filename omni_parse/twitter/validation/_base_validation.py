@@ -12,6 +12,7 @@ def status_code_check(func) -> None:
             return func(self, *args, **kwargs)
     return wrapper
 
+
 class BaseStatus:
     """
     Base methods and functionality for accessing response status.
@@ -42,6 +43,7 @@ class BaseStatus:
         """Set a new status."""
         self._status = status
 
+
 class _BaseValidation(ABC):
     """
     Base abstract functionality for validation of response.
@@ -66,6 +68,7 @@ class _BaseValidation(ABC):
     def _validate_response(self) -> None:
         """Initial validation of the response."""
         pass
+
 
 class BaseValidation(BaseStatus, _BaseValidation):
     """

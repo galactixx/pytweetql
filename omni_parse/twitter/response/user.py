@@ -1,8 +1,7 @@
 from typing import List
 
-from omni_parse.twitter.response._base_user import BaseUser
+from omni_parse.twitter.response._base_response import BaseUser
 from omni_parse.twitter._utils._utils import search_key
-from omni_parse.twitter.typing import APIResponse
 from omni_parse.twitter.validation._base_validation import BaseStatus
 from omni_parse.twitter._utils._data_structures import (
     Status,
@@ -44,7 +43,7 @@ class User(BaseUser):
     
     @property
     def user(self) -> UserInfo:
-        """The entire UserInfo dataclass"""
+        """The entire UserInfo dataclass."""
         return self._user
     
     @property
@@ -96,6 +95,7 @@ class User(BaseUser):
     def is_verified(self) -> bool:
         """Boolean indicating whether the user is verified."""
         return self._user.is_verified
+
 
 class Users(BaseStatus):
     """
