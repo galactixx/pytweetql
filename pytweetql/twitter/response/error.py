@@ -1,7 +1,7 @@
 from typing import List
 
-from omni_parse.twitter.response._base_response import BaseError
-from omni_parse.twitter._utils._data_structures import (
+from pytweetql.twitter.response._base_response import BaseError
+from pytweetql.twitter._utils._data_structures import (
     APIError,
     Status
 )

@@ -1,4 +1,4 @@
-from omni_parse.twitter._utils._data_structures import Status
+from pytweetql.twitter._utils._data_structures import Status
 
 success_response = Status(
     status_code=200,

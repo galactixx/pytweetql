@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 import json
 from typing import List
 
-from omni_parse.twitter._utils._data_structures import Status
-from omni_parse.twitter.status import *
-from omni_parse.twitter.typing import APIResponse
+from pytweetql.twitter._utils._data_structures import Status
+from pytweetql.twitter.status import *
+from pytweetql.twitter.typing import APIResponse
 
 def status_code_check(func) -> None:
     def wrapper(self, *args, **kwargs):

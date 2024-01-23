@@ -1,7 +1,7 @@
 import pytest
 
 from tests.utils import load_json_file
-from omni_parse import parsing
+from pytweetql import parsing
 
 parameters = [
     (

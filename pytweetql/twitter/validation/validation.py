@@ -1,17 +1,17 @@
 from typing import List
 
-from omni_parse.twitter.status import *
-from omni_parse.twitter._constants import *
-from omni_parse.twitter.typing import APIResponse
-from omni_parse.twitter.response.error import (
+from pytweetql.twitter.status import *
+from pytweetql.twitter._constants import *
+from pytweetql.twitter.typing import APIResponse
+from pytweetql.twitter.response.error import (
     Error,
     format_errors
 )
-from omni_parse.twitter.validation._base_validation import (
+from pytweetql.twitter.validation._base_validation import (
     BaseValidation,
     status_code_check
 )
-from omni_parse.twitter._utils._utils import (
+from pytweetql.twitter._utils._utils import (
     empty_dictionary,
     extract_dicts_from_list,
     search_key

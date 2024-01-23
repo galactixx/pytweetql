@@ -1,8 +1,8 @@
 from typing import List
 
-from omni_parse.twitter.response._base_response import BaseList
-from omni_parse.twitter.validation._base_validation import BaseStatus
-from omni_parse.twitter._utils._data_structures import (
+from pytweetql.twitter.response._base_response import BaseList
+from pytweetql.twitter.validation._base_validation import BaseStatus
+from pytweetql.twitter._utils._data_structures import (
     Status,
     ListInfo
 )

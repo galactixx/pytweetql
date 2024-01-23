@@ -1,11 +1,11 @@
 from typing import List
 
-from omni_parse.twitter.validation.validation import Validation
-from omni_parse.twitter.typing import APIResponse
-from omni_parse.twitter.response.user import Users
-from omni_parse.twitter.response.tweet import Tweets
-from omni_parse.twitter.response.list import TwitterLists
-from omni_parse.twitter.response.error import Error
+from pytweetql.twitter.validation.validation import Validation
+from pytweetql.twitter.typing import APIResponse
+from pytweetql.twitter.response.user import Users
+from pytweetql.twitter.response.tweet import Tweets
+from pytweetql.twitter.response.twitterlist import TwitterLists
+from pytweetql.twitter.response.error import Error
 
 def parse_errors(response: APIResponse) -> List[Error]:
     """
