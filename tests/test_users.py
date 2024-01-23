@@ -15,6 +15,18 @@ parameters = [
     200,
     'Success',
     2
+    ),
+    (
+    './tests/data/user_by_id_response.json',
+    200,
+    'Success',
+    1
+    ),
+    (
+    './tests/data/users_by_ids_response.json',
+    200,
+    'Success',
+    1
     )
 ]
 

@@ -1,6 +1,7 @@
 from typing import List
 
 from omni_parse.twitter.status import *
+from omni_parse.twitter._constants import *
 from omni_parse.twitter._utils._data_structures import Status
 from omni_parse.twitter.typing import APIResponse
 from omni_parse.twitter.validation._base_validation import (
@@ -12,14 +13,6 @@ from omni_parse.twitter._utils._utils import (
     extract_dicts_from_list,
     search_key
 )
-
-_LIST_TYPES = ['list']
-_USER_TYPES = ['user']
-_TWEET_TYPES = ['who-to-follow', 'tweet', 'promoted-tweet']
-
-_LIST_RESULTS = 'list'
-_USER_RESULTS = 'user_results'
-_TWEET_RESULTS = 'tweet_results'
 
 class GraphQLValidation(BaseValidation):
     """
@@ -37,7 +30,7 @@ class GraphQLValidation(BaseValidation):
             self.status = error_response_empty
 
     @status_code_check
-    def _search_entries(self, results: str, types: list) -> None:
+    def _search_entries(self, keys: list, types: list, results: str = None) -> None:
         """
         Search through entries to confirm type of data retrieved.
         
@@ -54,11 +47,15 @@ class GraphQLValidation(BaseValidation):
                 else:
                     self.response = entries
         else:
-            results = search_key(source=self.response, key=results)
-            if results:
-                self.response = results
-            else:
-                self.status = error_format_invalid
+            _response = []
+            for data in self.response:
+                data_keys = list(data.keys())
+                if len(data_keys) == 1 and data_keys[0] in keys:
+                    _response.append(data.get(data_keys[0]))
+            
+            self.response = extract_dicts_from_list(source=_response)
+            if not self.response:
+                self.status = error_invalid_parser
 
     @status_code_check
     def _validate_response(self) -> None:
@@ -96,7 +93,7 @@ class GraphQLValidation(BaseValidation):
 
             for item in response_extracted:
                 data_value = item.get('data')
-                if data_value is not None:
+                if isinstance(data_value, dict):
                     _response.append(data_value)
 
             if _response:
@@ -107,14 +104,14 @@ class GraphQLValidation(BaseValidation):
     @status_code_check
     def validate_response_list(self) -> None:
         """Validate that the response is list data."""
-        self._search_entries(results=_LIST_RESULTS, types=_LIST_TYPES)
+        self._search_entries(keys=LIST_KEYS, types=LIST_TYPES)
 
     @status_code_check
     def validate_response_tweet(self) -> None:
         """Validate that the response is tweet data."""
-        self._search_entries(results=_TWEET_RESULTS, types=_TWEET_TYPES)
+        self._search_entries(keys=TWEET_KEYS, types=TWEET_TYPES)
 
     @status_code_check
     def validate_response_user(self) -> None:
         """Validate that the response is user data."""
-        self._search_entries(results=_USER_RESULTS, types=_USER_TYPES)
+        self._search_entries(keys=USER_KEYS, types=USER_TYPES)

@@ -1,10 +1,10 @@
 from omni_parse.twitter.typing import APIResponse
 from omni_parse.twitter.response.user import Users
 from omni_parse.twitter.response.tweet import Tweets
-from omni_parse.twitter.response.list import Lists
+from omni_parse.twitter.response.list import TwitterLists
 from omni_parse.twitter.validation.graphql_validation import GraphQLValidation
 
-def parse_lists(response: APIResponse) -> Lists:
+def parse_lists(response: APIResponse) -> TwitterLists:
     """
     Parse each individual list detail from response.
 
@@ -16,7 +16,7 @@ def parse_lists(response: APIResponse) -> Lists:
     validation = GraphQLValidation(response=response)
     validation.validate_response_list()
 
-    return Lists(
+    return TwitterLists(
         response=validation.response,
         status=validation.status
     )

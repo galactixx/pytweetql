@@ -43,6 +43,11 @@ class User(BaseUser):
         )
     
     @property
+    def user(self) -> UserInfo:
+        """The entire UserInfo dataclass"""
+        return self._user
+    
+    @property
     def user_id(self) -> str:
         """The user ID of the Twitter account."""
         return self._user.user_id
@@ -97,7 +102,7 @@ class Users(BaseStatus):
     Parsing for a user-related API response.
 
     Args:
-        response (APIResponse): The response from a Twitter API.
+        response (List[dict]): The response from a Twitter API.
         status (Status): The status of the parsing.
     """
     def __init__(
@@ -133,8 +138,7 @@ class Users(BaseStatus):
         parsed_users = []
 
         for entry in self._response:
-            user_result = search_key(source=entry, key='user_results')
-            entry_result = search_key(source=user_result, key='result')
+            entry_result = search_key(source=entry, key='result')
             if entry_result:
                 result = entry_result[0]
                 legacy = result.get('legacy')

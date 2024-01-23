@@ -117,7 +117,7 @@ class Tweets(BaseStatus):
     Parsing for a tweet-related API response.
 
     Args:
-        response (APIResponse): The response from a Twitter API.
+        response (List[dict]): The response from a Twitter API.
         remove_promotions (bool): Whether to remove promoted tweets from parsing.
         status (Status): The status of the parsing.
     """

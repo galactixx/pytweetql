@@ -9,10 +9,10 @@ from omni_parse.twitter._utils._data_structures import (
 
 class TwitterList(BaseList):
     """
-    Parsing for an individual list.
+    Parsing for an individual Twitter list.
     
     Args:
-        result (dict): The raw data section in each list response.
+        entry (dict): The raw data section in each list response.
     """
     def __init__(self, entry: dict):
         super().__init__(entry=entry)
@@ -34,6 +34,11 @@ class TwitterList(BaseList):
             is_private=self._is_private,
             is_following=self._is_following
         )
+    
+    @property
+    def twitter_list(self) -> ListInfo:
+        """The entire ListInfo dataclass"""
+        return self._list
     
     @property
     def name(self) -> str:
@@ -65,12 +70,12 @@ class TwitterList(BaseList):
         """Boolean indicating whether the user is following the list."""
         return self._list.is_following
 
-class Lists(BaseStatus):
+class TwitterLists(BaseStatus):
     """
     Parsing for a list-related API response.
 
     Args:
-        response (APIResponse): The response from a Twitter API.
+        response (List[dict]): The response from a Twitter API.
         status (Status): The status of the parsing.
     """
     def __init__(
@@ -87,7 +92,7 @@ class Lists(BaseStatus):
             self._lists = []
     
     @property
-    def lists(self) -> List[TwitterList]:
+    def twitter_lists(self) -> List[TwitterList]:
         """Returns all the parsed lists."""
         return self._lists
 

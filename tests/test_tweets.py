@@ -11,7 +11,7 @@ parameters = [
     3
     ),
     (
-    './tests/data/tweet_create_response.json',
+    './tests/data/tweet_result_by_id.json',
     200,
     'Success',
     1
