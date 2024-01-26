@@ -3,6 +3,7 @@ from typing import List
 from pytweetql.response._base_response import BaseTweet
 from pytweetql.validation.validation import DirectPathValidation
 from pytweetql._utils._data_structures import TweetInfo
+from pytweetql.validation._base_validation import error_check_output
 from pytweetql._typing import Schema
 
 class Tweet(BaseTweet):
@@ -135,7 +136,8 @@ class Tweets(DirectPathValidation):
         remove_promotions: bool,
         endpoint: str
     ):
-        super().__init__(response=response, schema=schema)
+        super().__init__(response=response)
+        self._schema = schema
         self._remove_promotions = remove_promotions
         self.endpoint = endpoint
 
@@ -151,6 +153,7 @@ class Tweets(DirectPathValidation):
         """The number of tweets parsed in response."""
         return len(self._tweets)
     
+    @error_check_output
     def _parse_tweets(self) -> List[Tweet]:
         """
         Parse each individual tweet detail from response and load into list.
@@ -158,4 +161,8 @@ class Tweets(DirectPathValidation):
         Returns:
             List[Tweet]: A list of Tweet classes, one for each tweet detected.
         """
-        return [Tweet(**entry) for entry in self.validate_and_parse()]
+        return [
+            Tweet(**entry) for entry in self.extract_objects(
+                schema=self._schema
+            )
+        ]

@@ -4,27 +4,6 @@ from pytweetql._utils._utils import (
     verify_integer
 )
 
-class BaseError:
-    """
-    Parsing from the raw response of an individual error message.
-
-    Args:
-        message (dict): The raw error message dictionary.
-    """
-    def __init__(self, message: dict):
-        self._message_error = message
-
-    @property
-    def _message(self) -> str:
-        """The message which describes the error."""
-        return self._message_error.get('message')
-    
-    @property
-    def _code(self) -> int:
-        """An integer code associated with the error."""
-        return verify_integer(integer=self._message_error.get('code'))
-
-
 class BaseTweet:
     """
     Parsing for an individual tweet.

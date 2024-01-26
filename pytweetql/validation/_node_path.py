@@ -6,7 +6,7 @@ class PathNode:
     def __init__(
         self, 
         key: Any,
-        value_type: Literal['str', 'list', 'int', 'dict'] = 'dict'
+        value_type: Literal['str', 'bool', 'list', 'int', 'dict']
     ):
         self.key = key
         self.value_type = value_type
@@ -83,6 +83,8 @@ class NodePath:
             return self._type_check(key_search=key_search, type=int)
         elif node.value_type == 'str':
             return self._type_check(key_search=key_search, type=str)
+        elif node.value_type == 'bool':
+            return self._type_check(key_search=key_search, type=bool)
         else:
             raise ValueError(
                 'Argument type_value specified for node is invalid'

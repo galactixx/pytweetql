@@ -7,16 +7,14 @@ parameters = [
     (
     './tests/data/list_response.json',
     200,
-    'Success',
     1
     )
 ]
 
-@pytest.mark.parametrize('path, status_code, status_message, num_lists', parameters)
-def test_error_simple(path, status_code, status_message, num_lists) -> None:
-    """Test error responses."""
+@pytest.mark.parametrize('path, status_code, num_lists', parameters)
+def test_create_list(path, status_code, num_lists) -> None:
+    """Test CreateList response."""
     response = load_json_file(path=path)
-    lists = parsing.parse_lists(response=response)
+    lists = parsing.parse_create_list(response=response)
     assert lists.status_code == status_code
-    assert lists.status_message == status_message
     assert lists.num_lists == num_lists

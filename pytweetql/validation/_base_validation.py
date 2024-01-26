@@ -2,14 +2,16 @@ import json
 from typing import List
 
 from pytweetql.errors import *
-from pytweetql._typing import APIResponse
 from pytweetql._utils._utils import extract_dicts_from_list
-from pytweetql.response.error import Error
+from pytweetql._typing import APIResponse
 
-def status_code_check(func) -> None:
+def error_check_output(func) -> None:
+    """"""
     def wrapper(self, *args, **kwargs):
-        if self.status_code == 200:
-            return func(self, *args, **kwargs)
+        data = func(self, *args, **kwargs)
+        if not data and not self.errors:
+            self._error(error=ERROR_PARSER)
+        return data
     return wrapper
 
 
@@ -22,13 +24,18 @@ class BaseStatus:
     """
     def __init__(self):
         self._status_code = 200
-        self._errors: List[ValidationError] = []
+        self._errors: List[Error] = []
 
-    def _error(self, error: ValidationError) -> None:
+    def _error(self, error: Error) -> None:
         """Append error to list of errors."""
         self._errors.append(error)
         if self._status_code == 200:
             self._status_code = 400
+
+    @property
+    def errors(self) -> List[Error]:
+        """Returns all errors."""
+        return self._errors
     
     @property
     def status_code(self) -> str:
@@ -57,28 +64,6 @@ class BaseValidation(BaseStatus):
         """Set a new parsed response."""
         self._response = response
 
-    @staticmethod
-    def detect_errors(response: List[dict]) -> List[Error]:
-        """
-        Detect any API generated errors in response.
-
-        Args:
-            response (List[dict]): The semi-parsed API response.
-
-        Returns:
-            List[Error]: Any errors found in reponse, each as Error class.
-        """
-        errors = []
-        for item in response[:]:
-            messages: List[dict] = item.get('errors')
-            if messages:
-                response.remove(item)
-                for message in messages:
-                    error = Error(message=message)
-                    if error.message:
-                        errors.append(error)
-        return errors
-
     def _validate_input_type(self, response: APIResponse) -> None:
         """
         Validate the response input. Ensure that input is a list or dict. If JSON,
@@ -100,7 +85,6 @@ class BaseValidation(BaseStatus):
         else:
             self.response = response
     
-    @status_code_check
     def _validate_response(self) -> None:
         """Validate and ensure the response is from GraphQL."""
         response = self.response.copy()
@@ -113,18 +97,6 @@ class BaseValidation(BaseStatus):
             _response = []
             response_extracted = extract_dicts_from_list(source=response)
 
-            # # Check if the API response resulted in an error
-            # errors = BaseValidation.detect_errors(response=response_extracted)
-            # if not response_extracted:
-            #     if errors:
-            #         for error in errors:
-            #             self._error(
-            #                 error=generate_api_error(message=error.message)
-            #             )
-            #     else:
-            #         self._error(error=ERROR_API_UNKNOWN)
-            #     return
-
             for item in response_extracted:
                 data_value = item.get('data')
                 if isinstance(data_value, dict):
@@ -133,4 +105,5 @@ class BaseValidation(BaseStatus):
             if _response:
                 self.response = _response
                 return
-        self._error(error=ERROR_FORMAT)
+            else:
+                self._error(error=ERROR_FORMAT)

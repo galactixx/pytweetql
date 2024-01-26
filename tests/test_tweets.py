@@ -3,26 +3,42 @@ import pytest
 from tests.utils import load_json_file
 from pytweetql import parsing
 
-parameters = [
+parameters_user_tweets = [
     (
     './tests/data/tweet_response.json',
     200,
-    'Success',
-    3
-    ),
+    4
+    )
+]
+
+parameters_tweet_result_by_id = [
     (
     './tests/data/tweet_result_by_id.json',
     200,
-    'Success',
     1
     )
 ]
 
-@pytest.mark.parametrize('path, status_code, status_message, num_tweets', parameters)
-def test_tweets(path, status_code, status_message, num_tweets) -> None:
-    """Test tweet responses."""
+
+@pytest.mark.parametrize(
+    'path, status_code, num_tweets',
+    parameters_user_tweets
+)
+def test_user_tweets(path, status_code, num_tweets) -> None:
+    """Test UserTweets responses."""
     response = load_json_file(path=path)
-    tweets = parsing.parse_tweets(response=response)
+    tweets = parsing.parse_user_tweets(response=response)
     assert tweets.status_code == status_code
-    assert tweets.status_message == status_message
+    assert tweets.num_tweets == num_tweets
+
+
+@pytest.mark.parametrize(
+    'path, status_code, num_tweets',
+    parameters_tweet_result_by_id
+)
+def test_tweet_result_by_id(path, status_code, num_tweets) -> None:
+    """Test TweetResultByRestId response."""
+    response = load_json_file(path=path)
+    tweets = parsing.parse_tweet_result_by_id(response=response)
+    assert tweets.status_code == status_code
     assert tweets.num_tweets == num_tweets

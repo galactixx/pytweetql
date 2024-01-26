@@ -1,8 +1,13 @@
-from typing import Any, Dict, Generator, List
+from typing import Any, Generator, List, Tuple
 import copy
 
 from pytweetql.errors import *
-from pytweetql._typing import APIResponse
+from pytweetql.validation._base_validation import BaseValidation
+from pytweetql.validation._nodes import nodes_error_api
+from pytweetql._typing import (
+    APIResponse, 
+    Schema
+)
 from pytweetql._utils._utils import (
     empty_dictionary,
     extract_dicts_from_list
@@ -11,10 +16,23 @@ from pytweetql.validation._node_path import (
     NodePath,
     PathNode
 )
-from pytweetql.validation._base_validation import (
-    BaseValidation,
-    status_code_check
-)
+
+def _derive_node_path(schema: Schema) -> NodePath:
+    """"""
+    return NodePath(schema=schema)
+
+
+def _schema_validate(schema: Schema) -> None:
+    """Validate that node schema has been properly specified."""
+    if 'entry' not in schema or 'objects' not in schema:
+        raise TypeError("Schema must only have 'entry' and 'objects' keys")
+    
+
+def _load_schema(schema: Schema) -> Tuple[dict, dict]:
+    """Validate and load schema specification."""
+    _schema_validate(schema=schema)
+    return schema['entry'], schema['objects']
+
 
 class DirectPathValidation(BaseValidation):
     """
@@ -25,19 +43,31 @@ class DirectPathValidation(BaseValidation):
         schema (dict): A list of PathNode classes to be constructed into
             doubly linked list.
     """
-    def __init__(self, response: APIResponse, schema: Dict[str, dict]):
+    def __init__(self, response: APIResponse):
         super().__init__(response=response)
-        if 'entry' not in schema or 'objects' not in schema:
-            raise TypeError("Schema must only have 'entry' and 'objects' keys")
 
-        self._schema = schema
-        self._node_path_main = NodePath(schema=schema['entry'])
+        # Detect and extract any errors in response
+        self.extract_errors()
 
+        # Validate response and check if result is empty
         self._validate_response()
         if empty_dictionary(source=self.response):
             self._error(error=ERROR_EMPTY)
+        
+    def extract_errors(self) -> None:
+        """
+        """
+        errors = self.extract_objects(schema=nodes_error_api)
+        for error in errors:
+            self._error(
+                error=generate_api_error(**error)
+            )
 
-    def _if_been_list(self, response: List[dict], current_node: PathNode) -> List[dict]:
+    def _if_been_list(
+        self, 
+        response: List[dict], 
+        current_node: PathNode
+    ) -> List[dict]:
         """"""
         key_search = []
         for item in response:
@@ -47,26 +77,31 @@ class DirectPathValidation(BaseValidation):
                     key_search.append(list_value)
         return key_search
 
-    @status_code_check
-    def validate_and_parse(self) -> Generator[Any, None, None]:
+    def extract_objects(self, schema: Schema) -> Generator[Any, None, None]:
         """"""
-        entries = self._validate_main_schema(
-            node_path=self._node_path_main,
+        # Load in schema
+        schema_entry, schema_objects = _load_schema(schema=schema)
+
+        # Derive entry node path
+        node_path_entry = _derive_node_path(schema=schema_entry)
+
+        # Validate schema
+        entries = self._validate_schema(
+            node_path=node_path_entry,
             responses=self.response
         )
         for entry in entries:
             entry_results = {}
-            for arg, schema in self._schema['objects'].items():
-                results = self._validate_main_schema(
-                    node_path=NodePath(schema=schema), 
+            for arg, schema in schema_objects.items():
+                results = self._validate_schema(
+                    node_path=_derive_node_path(schema=schema),
                     responses=[entry]
                 )
                 for result in results:
                     entry_results.update({arg: result})
             yield entry_results
 
-    @status_code_check
-    def _validate_main_schema(
+    def _validate_schema(
         self,
         node_path: NodePath,
         responses: List[dict]
@@ -121,5 +156,4 @@ class DirectPathValidation(BaseValidation):
                     else:
                         current_node = current_node.next
                 else:
-                    self._error(error=ERROR_PARSER)
                     break

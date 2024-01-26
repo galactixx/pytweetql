@@ -108,7 +108,8 @@ class Users(DirectPathValidation):
         schema: Schema, 
         endpoint: str
     ):
-        super().__init__(response=response, schema=schema)
+        super().__init__(response=response)
+        self._schema = schema
         self.endpoint = endpoint
 
         self._users = self._parse_users()
@@ -130,4 +131,8 @@ class Users(DirectPathValidation):
         Returns:
             List[User]: A list of User classes, one for each user detected.
         """
-        return [User(**entry) for entry in self.validate_and_parse()]
+        return [
+            User(**entry) for entry in self.extract_objects(
+                schema=self._schema
+            )
+        ]

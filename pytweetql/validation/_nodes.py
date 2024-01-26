@@ -1,6 +1,33 @@
+nodes_error_api = {
+    'entry': {'errors': {'type': 'list'}},
+    'objects': {
+        'code': {'code': {'type': 'int'}},
+        'message': {'message': {'type': 'str'}}
+    }
+}
+nodes_create_tweet = {
+    'entry': {'create_tweet': {'type': 'dict', 'children': {
+        'tweet_results': {'type': 'dict', 'children': {
+            'result': {'type': 'dict'}}}}}
+    },
+    'objects': {
+        'user': {'core': {'type': 'dict', 'children': {
+            'user_results': {'type': 'dict', 'children': {
+                'result': {'type': 'dict'}}}}}
+        },
+        'user_info': {'core': {'type': 'dict', 'children': {
+            'user_results': {'type': 'dict', 'children': {
+                'result': {'type': 'dict', 'children': {
+                    'legacy': {'type': 'dict'}}}}}}}
+        },
+        'tweet': {'legacy': {'type': 'dict'}},
+        'source': {'source': {'type': 'str'}}
+    }
+}
 nodes_list_create = {
     'entry': {'list': {'type': 'dict'}},
     'objects': {
+        'name': {'name': {'type': 'str'}},
         'description': {'description': {'type': 'str'}},
         'is_following': {'following': {'type': 'bool'}},
         'list_id': {'id_str': {'type': 'str'}},
