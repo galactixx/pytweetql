@@ -1,21 +1,29 @@
 from typing import List
 
-from pytweetql.twitter.response._base_response import BaseList
-from pytweetql.twitter.validation._base_validation import BaseStatus
-from pytweetql.twitter._utils._data_structures import (
-    Status,
-    ListInfo
-)
+from pytweetql.validation.validation import DirectPathValidation
+from pytweetql._utils._data_structures import ListInfo
+from pytweetql._typing import Schema
 
-class TwitterList(BaseList):
+class TwitterList:
     """
     Parsing for an individual Twitter list.
     
     Args:
         entry (dict): The raw data section in each list response.
     """
-    def __init__(self, entry: dict):
-        super().__init__(entry=entry)
+    def __init__(
+        self,
+        description: str,
+        is_following: bool,
+        list_id: str,
+        member_count: int,
+        mode: str
+    ):
+        self._description = description
+        self._is_following = is_following
+        self._list_id = list_id
+        self._member_count = member_count
+        self._mode = mode
 
         self._list = self._parse_list()
 
@@ -31,7 +39,7 @@ class TwitterList(BaseList):
             description=self._description,
             list_id=self._list_id,
             member_count=self._member_count,
-            is_private=self._is_private,
+            mode=self._mode,
             is_following=self._is_following
         )
     
@@ -71,7 +79,7 @@ class TwitterList(BaseList):
         return self._list.is_following
 
 
-class TwitterLists(BaseStatus):
+class TwitterLists(DirectPathValidation):
     """
     Parsing for a list-related API response.
 
@@ -81,16 +89,14 @@ class TwitterLists(BaseStatus):
     """
     def __init__(
         self,
-        response: List[dict],
-        status: Status
+        response: List[dict], 
+        schema: Schema, 
+        endpoint: str
     ):
-        super().__init__(status=status)
-        self._response = response
+        super().__init__(response=response, schema=schema)
+        self.endpoint = endpoint
 
-        if self.status_code == 200:
-            self._lists = self._parse_lists()
-        else:
-            self._lists = []
+        self._lists = self._parse_lists()
     
     @property
     def twitter_lists(self) -> List[TwitterList]:
@@ -109,12 +115,4 @@ class TwitterLists(BaseStatus):
         Returns:
             List[TwitterList]: A list of TwitterList classes, one for each list detected.
         """
-        parsed_lists = []
-
-        for entry in self._response:
-            if isinstance(entry, dict):
-                parsed_lists.append(
-                    TwitterList(entry=entry)
-                )
-
-        return parsed_lists
+        return [TwitterList(**entry) for entry in self.validate_and_parse()]

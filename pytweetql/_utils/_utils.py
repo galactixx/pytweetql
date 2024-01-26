@@ -3,7 +3,7 @@ from datetime import datetime
 import logging
 
 from pytweetql._logging import logging_config
-from pytweetql.twitter.typing import ResponseKey
+from pytweetql._typing import ResponseKey
 
 logger = logging.getLogger(__name__)
 logging_config(logger=logger)
@@ -71,22 +71,6 @@ def verify_datetime(created: Any) -> Optional[str]:
         return created
 
 
-def return_value(source: ResponseKey, key: str) -> Any:
-    """
-    Should be used if you are pulling a value at the endpoint of parsing.
-
-    Args:
-        source (ResponseKey): A list or dictionary.
-        key (str): The key to search for.
-
-    Returns:
-        Any: Item pulled from object. 
-    """
-    found_key = search_key(source=source, key=key)
-    if found_key:
-        return found_key[0]
-
-
 def extract_dicts_from_list(source: list) -> List[dict]:
     """
     Recursive function to extract the top-level dictionaries into one list
@@ -126,39 +110,3 @@ def empty_dictionary(source: ResponseKey) -> bool:
         return all(empty_dictionary(element) for element in source)
     else:
         return not source
-
-
-def search_key(source: ResponseKey, key: str) -> List[dict]:
-    """
-    A recursive function to find all values of a given key within a
-    nested dict or list of dicts.
-
-    Args:
-        source (ResponseKey): A list or dictionary.
-        key (str): The key to search for.
-
-    Returns:
-        List[dict]: A list with the found dictionary or an empty list.
-    """
-    def helper(source: ResponseKey, key: str, target: list) -> list:
-        if not source:
-            return target
-
-        if isinstance(source, list):
-            for e in source:
-                target.extend(helper(e, key, []))
-            return target
-
-        if isinstance(source, dict) and source.get(key):
-            value = source[key]
-            if isinstance(value, list):
-                target.extend(value)
-            else:
-                target.append(value)
-
-        if isinstance(source, dict) and source:
-            for k in source:
-                target.extend(helper(source[k], key, []))
-        return target
-
-    return helper(source, key, [])

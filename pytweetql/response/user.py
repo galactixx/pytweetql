@@ -1,12 +1,9 @@
 from typing import List
 
-from pytweetql.twitter.response._base_response import BaseUser
-from pytweetql.twitter._utils._utils import search_key
-from pytweetql.twitter.validation._base_validation import BaseStatus
-from pytweetql.twitter._utils._data_structures import (
-    Status,
-    UserInfo
-)
+from pytweetql.response._base_response import BaseUser
+from pytweetql.validation.validation import DirectPathValidation
+from pytweetql._utils._data_structures import UserInfo
+from pytweetql._typing import Schema
 
 class User(BaseUser):
     """
@@ -16,8 +13,8 @@ class User(BaseUser):
         result (dict): The raw result section in each user response.
         legacy (dict): The raw legacy section in each user response.
     """
-    def __init__(self, result: dict, legacy: dict):
-        super().__init__(result=result, legacy=legacy)
+    def __init__(self, user: dict, user_info: dict):
+        super().__init__(user=user, user_info=user_info)
 
         self._user = self._parse_user()
 
@@ -97,7 +94,7 @@ class User(BaseUser):
         return self._user.is_verified
 
 
-class Users(BaseStatus):
+class Users(DirectPathValidation):
     """
     Parsing for a user-related API response.
 
@@ -107,16 +104,14 @@ class Users(BaseStatus):
     """
     def __init__(
         self,
-        response: List[dict],
-        status: Status
+        response: List[dict], 
+        schema: Schema, 
+        endpoint: str
     ):
-        super().__init__(status=status)
-        self._response = response
+        super().__init__(response=response, schema=schema)
+        self.endpoint = endpoint
 
-        if self.status_code == 200:
-            self._users = self._parse_users()
-        else:
-            self._users = []
+        self._users = self._parse_users()
 
     @property
     def users(self) -> List[User]:
@@ -135,20 +130,4 @@ class Users(BaseStatus):
         Returns:
             List[User]: A list of User classes, one for each user detected.
         """
-        parsed_users = []
-
-        for entry in self._response:
-            entry_result = search_key(source=entry, key='result')
-            if entry_result:
-                result = entry_result[0]
-                legacy = result.get('legacy')
-
-                if isinstance(legacy, dict):
-                    parsed_users.append(
-                        User(
-                            result=result,
-                            legacy=legacy
-                        )
-                    )
-
-        return parsed_users
+        return [User(**entry) for entry in self.validate_and_parse()]

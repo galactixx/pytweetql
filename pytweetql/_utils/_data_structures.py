@@ -1,17 +1,5 @@
 from dataclasses import dataclass
-
-@dataclass(frozen=True)
-class Status:
-    """
-    The status code and description of validation process.
-    
-    Attributes:
-        status_code (int): The status code.
-        message (str): Description of the result.
-    """
-    status_code: int
-    message: str
-
+from typing import Any, Literal
 
 @dataclass(frozen=True)
 class APIError:
@@ -35,15 +23,15 @@ class ListInfo:
         name (str): The list name.
         description (str): The list description.
         list_id (str): The list ID.
+        mode (str): The mode of the list (public or private).
         member_count (int): The number of members in the list.
-        is_private (bool): Boolean indicating whether the list is private.
         is_following (bool): Boolean indicating whether the user is following the list.
     """
     name: str
     description: str
     list_id: str
+    mode: str
     member_count: int
-    is_private: bool
     is_following: bool
 
 

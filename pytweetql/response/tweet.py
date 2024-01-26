@@ -1,26 +1,33 @@
 from typing import List
 
-from pytweetql.twitter.response._base_response import BaseTweet
-from pytweetql.twitter._utils._utils import search_key
-from pytweetql.twitter.validation._base_validation import BaseStatus
-from pytweetql.twitter._utils._data_structures import (
-    Status,
-    TweetInfo
-)
-
-_PROMOTED_TAGS = ['promoted-tweet', 'who-to-follow']
+from pytweetql.response._base_response import BaseTweet
+from pytweetql.validation.validation import DirectPathValidation
+from pytweetql._utils._data_structures import TweetInfo
+from pytweetql._typing import Schema
 
 class Tweet(BaseTweet):
     """
     Parsing for an individual tweet.
     
     Args:
-        core (dict): The raw core section in each tweet response.
-        legacy (dict): The raw legacy section in each tweet response.
-        source (dict): The raw source section in each tweet response.
+        user (dict): The raw user section in each tweet response.
+        user_info (dict): The raw user info section in each tweet response.
+        tweet (dict): The raw tweet section in each tweet response.
+        source (str): The raw source section in each tweet response.
     """
-    def __init__(self, core: dict, legacy: dict, source: dict):
-        super().__init__(core=core, legacy=legacy, source=source)
+    def __init__(
+        self, 
+        user: dict, 
+        user_info: dict, 
+        tweet: dict, 
+        source: str
+    ):
+        super().__init__(
+            user=user,
+            user_info=user_info, 
+            tweet=tweet, 
+            source=source
+        )
 
         self._tweet = self._parse_tweet()
 
@@ -112,7 +119,7 @@ class Tweet(BaseTweet):
         return self._tweet.is_retweet
 
 
-class Tweets(BaseStatus):
+class Tweets(DirectPathValidation):
     """
     Parsing for a tweet-related API response.
 
@@ -122,19 +129,17 @@ class Tweets(BaseStatus):
         status (Status): The status of the parsing.
     """
     def __init__(
-        self,
-        response: List[dict],
+        self, 
+        response: List[dict], 
+        schema: Schema, 
         remove_promotions: bool,
-        status: Status
+        endpoint: str
     ):
-        super().__init__(status=status)
-        self._response = response
+        super().__init__(response=response, schema=schema)
         self._remove_promotions = remove_promotions
+        self.endpoint = endpoint
 
-        if self.status_code == 200:
-            self._tweets = self._parse_tweets()
-        else:
-            self._tweets = []
+        self._tweets = self._parse_tweets()
 
     @property
     def tweets(self) -> List[Tweet]:
@@ -153,30 +158,4 @@ class Tweets(BaseStatus):
         Returns:
             List[Tweet]: A list of Tweet classes, one for each tweet detected.
         """
-        parsed_tweets = []
-
-        for entry in self._response:
-            entry_result = search_key(source=entry, key='result')
-            if entry_result:
-                entry_result = entry_result[0]
-                core = entry_result.get('core')
-                legacy = entry_result.get('legacy')
-                source = entry_result.get('source')
-
-                if isinstance(core, dict) and isinstance(legacy, dict):
-                    if self._remove_promotions:
-                        entry_id = entry.get('entryId')
-                        if isinstance(entry_id, str) and any(
-                            entry_id.startswith(prom) for prom in _PROMOTED_TAGS
-                        ):
-                            continue
-
-                    parsed_tweets.append(
-                        Tweet(
-                            core=core,
-                            legacy=legacy,
-                            source=source
-                        )
-                    )
-
-        return parsed_tweets
+        return [Tweet(**entry) for entry in self.validate_and_parse()]

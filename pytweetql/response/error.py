@@ -1,27 +1,5 @@
-from typing import List
-
-from pytweetql.twitter.response._base_response import BaseError
-from pytweetql.twitter._utils._data_structures import (
-    APIError,
-    Status
-)
-
-def format_errors(errors: List['Error']) -> Status:
-    """
-    Format errors in pretty way.
-
-    Args:
-        errors (List[Error]): The list of error objects:
-
-    Returns:
-        Status: The Status with the errors as a formatted message.
-    """
-    errors_messages = '\n'.join(error.message for error in errors)
-    return Status(
-        status_code=502,
-        message=f'API request error: {errors_messages}'
-    )
-
+from pytweetql.response._base_response import BaseError
+from pytweetql._utils._data_structures import APIError
 
 class Error(BaseError):
     """
