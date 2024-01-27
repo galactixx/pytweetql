@@ -29,6 +29,7 @@ def _derive_node_path(schema: dict) -> NodePath:
     """
     return NodePath(schema=schema)
 
+
 def _load_schema(schema: Schema) -> Tuple[dict, dict]:
     """
     Validate and load schema specification.
@@ -147,21 +148,21 @@ class DirectPathValidation(BaseValidation):
             while current_node is not None:
 
                 # Find the current node key in response
-                key_search = None
+                obj = None
                 if node_path.been_list:
-                    key_search = self._if_been_list(
+                    obj = self._if_been_list(
                         response=resp, 
                         current_node=current_node
                     )
                 elif isinstance(resp, dict):
-                    key_search = resp.get(current_node.key)
+                    obj = resp.get(current_node.key)
 
                 # Match type of found value to expected type
                 if node_path.isinstance_of_type(
-                    key_search=key_search, 
+                    obj=obj, 
                     node=current_node
                 ):
-                    resp = copy.copy(key_search)
+                    resp = copy.copy(obj)
                     previouse_node = current_node.prev
 
                     # If value of previous node was a list,
