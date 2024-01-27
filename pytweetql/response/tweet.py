@@ -34,7 +34,7 @@ class Tweet(BaseTweet):
 
     def _parse_tweet(self) -> TweetInfo:
         """
-        Parse tweet dictionariess into structured format.
+        Parse tweet info into structured format.
 
         Returns:
             TweetInfo: The dataclass which holds all relevant tweet detail.
@@ -122,12 +122,13 @@ class Tweet(BaseTweet):
 
 class Tweets(DirectPathValidation):
     """
-    Parsing for a tweet-related API response.
+    Parsing for a tweet API response.
 
     Args:
-        response (List[dict]): The response from a Twitter API.
+        response (APIResponse): The response from a Twitter API.
+        schema (Schema): The schema used to validate the API response.
         remove_promotions (bool): Whether to remove promoted tweets from parsing.
-        status (Status): The status of the parsing.
+        endpoint (str): The name the the GraphQL endpoint.
     """
     def __init__(
         self,
@@ -156,7 +157,7 @@ class Tweets(DirectPathValidation):
     @error_check_output
     def _parse_tweets(self) -> List[Tweet]:
         """
-        Parse each individual tweet detail from response and load into list.
+        Parse each individual tweet detail from response.
 
         Returns:
             List[Tweet]: A list of Tweet classes, one for each tweet detected.

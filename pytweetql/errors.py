@@ -2,14 +2,21 @@ from dataclasses import dataclass
 
 @dataclass
 class Error:
-    """"""
+    """
+    A parsing error.
+
+    Attributes:
+        code (str): Code associated with the error.
+        message (str): Message associated with the error.
+        api_code (int, optional): An API code, if the error was generated from the API.
+    """
     code: str
     message: str
     api_code: int = None
 
 
 def generate_api_error(code: int, message: str) -> Error:
-    """Generate dynamic API error with message."""
+    """Generate dynamic API error from message."""
     return Error(code='ERR_007', message=message, api_code=code)
 
 

@@ -10,12 +10,12 @@ class TwitterList:
     Parsing for an individual Twitter list.
     
     Args:
-        name (str): .
-        description (str): .
-        is_following (bool): .
-        list_id (str): .
-        member_count (int): .
-        mode (str): .
+        name (str): The list name.
+        description (str): The list description.
+        list_id (str): The list ID.
+        mode (str): The mode of the list (public or private).
+        member_count (int): The number of members in the list.        
+        is_following (bool): Boolean indicating whether the user is following the list.
     """
     def __init__(
         self,
@@ -37,10 +37,10 @@ class TwitterList:
 
     def _parse_list(self) -> ListInfo:
         """
-        Parse list dictionaries into structured format.
+        Parse Twitter list info into structured format.
 
         Returns:
-            ListInfo: The dataclass which holds all relevant list detail.
+            ListInfo: The dataclass which holds all relevant Twitter list detail.
         """
         return ListInfo(
             name=self._name,
@@ -89,11 +89,12 @@ class TwitterList:
 
 class TwitterLists(DirectPathValidation):
     """
-    Parsing for a list-related API response.
+    Parsing for a Twitter list API response.
 
     Args:
-        response (List[dict]): The response from a Twitter API.
-        status (Status): The status of the parsing.
+        response (APIResponse): The response from a Twitter API.
+        schema (Schema): The schema used to validate the API response.
+        endpoint (str): The name the the GraphQL endpoint.
     """
     def __init__(
         self,
@@ -109,18 +110,18 @@ class TwitterLists(DirectPathValidation):
     
     @property
     def twitter_lists(self) -> List[TwitterList]:
-        """Returns all the parsed lists."""
+        """Returns all the parsed Twitter lists."""
         return self._lists
 
     @property
     def num_lists(self) -> int:
-        """The number of lists parsed in response."""
+        """The number of Twitter lists parsed in response."""
         return len(self._lists)
 
     @error_check_output
     def _parse_lists(self) -> List[TwitterList]:
         """
-        Parse each individual list detail from response and load into list.
+        Parse each individual Twitter list detail from response.
 
         Returns:
             List[TwitterList]: A list of TwitterList classes, one for each list detected.

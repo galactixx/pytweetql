@@ -6,7 +6,7 @@ from pytweetql._utils._utils import (
 
 class BaseTweet:
     """
-    Parsing for an individual tweet.
+    Raw parsing for an individual tweet.
     
     Args:
         user (dict): The raw user section in each tweet response.
@@ -83,13 +83,13 @@ class BaseTweet:
 
 class BaseUser:
     """
-    Parsing from the raw response of an individual user.
+    Raw parsing for an individual user.
 
     Args:
-        result (dict): The raw result section in each user response.
-        legacy (dict): The raw legacy section in each user response.
+        user (str): The raw user ID in each user response.
+        user_info (dict): The raw user info section in each user response.
     """
-    def __init__(self, user: dict, user_info: dict):
+    def __init__(self, user: str, user_info: dict):
         self._user = user
         self._user_info = user_info
 

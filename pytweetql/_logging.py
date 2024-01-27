@@ -2,10 +2,7 @@ import logging
 from logging import Logger
 
 def logging_config(logger: Logger) -> None:
-    """
-    Create logging configuration.
-    """
-
+    """Create logging configuration."""
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
 

@@ -2,6 +2,7 @@ from typing import Any, Literal, Optional
 
 class PathNode:
     """
+    An individual node in the path.
     """
     def __init__(
         self, 
@@ -16,10 +17,10 @@ class PathNode:
 
 class NodePath:
     """
-    Turn a list of PathNode dataclasses into an interator.
+    A linked list of PathNodes from schema.
 
     Args:
-        schema (dict): The linked list dictionary schema.
+        schema (dict): The dictionary schema used to validate the API response.
     """
     def __init__(self, schema: dict):
         self.head = None
@@ -50,7 +51,7 @@ class NodePath:
         Construct the doubly linked list.
 
         Args:
-            schema (dict): The linked list dictionary schema.
+            schema (dict): The dictionary schema used to validate the API response.
         """
         for key, value in schema.items():
             if 'type' not in value:
@@ -63,28 +64,45 @@ class NodePath:
         if 'children' in schema:
             self._construct_linked_list(schema['children'])
 
-    def _type_check(self, key_search: Any, type: type) -> bool:
+    def _type_check(self, obj: Any, expected_type: type) -> bool:
         """
+        Logic to check type of object in response dict structure.
+
+        Args:
+            obj (Any): The object found in the step search.
+            expected_type (type): The expected type of the object.
+
+        Returns:
+            bool: Whether the object matches the expected type.
         """
         if self.been_list:
-            return all(isinstance(var, type) for var in key_search)
+            return all(isinstance(var, expected_type) for var in obj)
         else:
-            if type == list:
+            if expected_type == list:
                 self.been_list = True
-            return isinstance(key_search, type)
+            return isinstance(obj, expected_type)
     
-    def isinstance_of_type(self, key_search: Any, node: PathNode) -> bool:
-        """"""
+    def isinstance_of_type(self, obj: Any, node: PathNode) -> bool:
+        """
+        Validate type of found object in response.
+
+        Args:
+            obj (Any): The object found in the step search.
+            node (PathNode): A node in the validation schema.
+
+        Returns:
+            bool: Whether the object matches the expected type.
+        """
         if node.value_type == 'list':
-            return self._type_check(key_search=key_search, type=list)
+            return self._type_check(obj=obj, expected_type=list)
         elif node.value_type == 'dict':
-            return self._type_check(key_search=key_search, type=dict)
+            return self._type_check(obj=obj, expected_type=dict)
         elif node.value_type == 'int':
-            return self._type_check(key_search=key_search, type=int)
+            return self._type_check(obj=obj, expected_type=int)
         elif node.value_type == 'str':
-            return self._type_check(key_search=key_search, type=str)
+            return self._type_check(obj=obj, expected_type=str)
         elif node.value_type == 'bool':
-            return self._type_check(key_search=key_search, type=bool)
+            return self._type_check(obj=obj, expected_type=bool)
         else:
             raise ValueError(
                 'Argument type_value specified for node is invalid'

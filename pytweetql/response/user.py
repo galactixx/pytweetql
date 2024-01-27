@@ -11,8 +11,8 @@ class User(BaseUser):
     Parsing for an individual tweet.
     
     Args:
-        result (dict): The raw result section in each user response.
-        legacy (dict): The raw legacy section in each user response.
+        user (str): The raw user ID in each user response.
+        user_info (dict): The raw user info section in each user response.
     """
     def __init__(self, user: dict, user_info: dict):
         super().__init__(user=user, user_info=user_info)
@@ -21,7 +21,7 @@ class User(BaseUser):
 
     def _parse_user(self) -> UserInfo:
         """
-        Parse user dictionaries into structured format.
+        Parse user info into structured format.
 
         Returns:
             UserInfo: The dataclass which holds all relevant user detail.
@@ -97,11 +97,12 @@ class User(BaseUser):
 
 class Users(DirectPathValidation):
     """
-    Parsing for a user-related API response.
+    Parsing for a user API response.
 
     Args:
-        response (List[dict]): The response from a Twitter API.
-        status (Status): The status of the parsing.
+        response (APIResponse): The response from a Twitter API.
+        schema (Schema): The schema used to validate the API response.
+        endpoint (str): The name the the GraphQL endpoint.
     """
     def __init__(
         self,
@@ -128,7 +129,7 @@ class Users(DirectPathValidation):
     @error_check_output
     def _parse_users(self) -> List[User]:
         """
-        Parse each individual user detail from response and load into list.
+        Parse each individual user detail from response.
 
         Returns:
             List[User]: A list of User classes, one for each user detected.

@@ -27,7 +27,7 @@ def verify_boolean(boolean: Any) -> Optional[bool]:
             return False
 
 
-def verify_integer(integer: Any) -> int:
+def verify_integer(integer: Any) -> Optional[int]:
     """
     Verify expected integer value type. If not an integer will return None.
 
@@ -52,7 +52,7 @@ def verify_integer(integer: Any) -> int:
             return
 
 
-def verify_datetime(created: Any) -> Optional[str]:
+def verify_datetime(created: Any) -> Any:
     """
     Verfiy format of created date provided in response.
 
@@ -60,7 +60,7 @@ def verify_datetime(created: Any) -> Optional[str]:
         created (Any): The string representation of the created date field.
 
     Returns:
-        str, optional: The converted UTC string datetime into an ISO format datetime.
+        Any: The converted UTC string datetime into an ISO format datetime.
     """
     try:
         return datetime.strptime(created, "%a %b %d %H:%M:%S %z %Y").isoformat()

@@ -6,7 +6,9 @@ from pytweetql._utils._utils import extract_dicts_from_list
 from pytweetql._typing import APIResponse
 
 def error_check_output(func) -> None:
-    """"""
+    """
+    Decorator to add invalid parser error.
+    """
     def wrapper(self, *args, **kwargs):
         data = func(self, *args, **kwargs)
         if not data and not self.errors:
@@ -17,10 +19,7 @@ def error_check_output(func) -> None:
 
 class BaseStatus:
     """
-    Base methods and functionality for accessing response status.
-
-    Args:
-        status (Status): The current status of the parsing.
+    Base methods and functionality for managing response status.
     """
     def __init__(self):
         self._status_code = 200
