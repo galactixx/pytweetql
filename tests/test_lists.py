@@ -5,7 +5,7 @@ from pytweetql import parsing
 
 parameters = [
     (
-    './tests/data/list_response.json',
+    './tests/data/create_list.json',
     200,
     1
     )

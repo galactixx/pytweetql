@@ -2,6 +2,7 @@ from typing import List
 
 from pytweetql.validation.validation import DirectPathValidation
 from pytweetql._utils._data_structures import ListInfo
+from pytweetql.validation._base_validation import error_check_output
 from pytweetql._typing import Schema
 
 class TwitterList:
@@ -116,6 +117,7 @@ class TwitterLists(DirectPathValidation):
         """The number of lists parsed in response."""
         return len(self._lists)
 
+    @error_check_output
     def _parse_lists(self) -> List[TwitterList]:
         """
         Parse each individual list detail from response and load into list.

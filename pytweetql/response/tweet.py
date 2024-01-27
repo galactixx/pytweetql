@@ -130,9 +130,9 @@ class Tweets(DirectPathValidation):
         status (Status): The status of the parsing.
     """
     def __init__(
-        self, 
-        response: List[dict], 
-        schema: Schema, 
+        self,
+        response: List[dict],
+        schema: Schema,
         remove_promotions: bool,
         endpoint: str
     ):

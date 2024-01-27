@@ -3,6 +3,7 @@ from typing import List
 from pytweetql.response._base_response import BaseUser
 from pytweetql.validation.validation import DirectPathValidation
 from pytweetql._utils._data_structures import UserInfo
+from pytweetql.validation._base_validation import error_check_output
 from pytweetql._typing import Schema
 
 class User(BaseUser):
@@ -124,6 +125,7 @@ class Users(DirectPathValidation):
         """The number of users parsed in response."""
         return len(self._users)
 
+    @error_check_output
     def _parse_users(self) -> List[User]:
         """
         Parse each individual user detail from response and load into list.
