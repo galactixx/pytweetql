@@ -1,5 +1,13 @@
 from typing import Any, Literal, Optional
 
+_TYPE_MAPPING = {
+    'list': list,
+    'dict': dict,
+    'int': int,
+    'str': str,
+    'bool': bool
+}
+
 class PathNode:
     """
     An individual node in the path.
@@ -63,24 +71,6 @@ class NodePath:
             
         if 'children' in schema:
             self._construct_linked_list(schema['children'])
-
-    def _type_check(self, obj: Any, expected_type: type) -> bool:
-        """
-        Logic to check type of object in response dict structure.
-
-        Args:
-            obj (Any): The object found in the step search.
-            expected_type (type): The expected type of the object.
-
-        Returns:
-            bool: Whether the object matches the expected type.
-        """
-        if self.been_list:
-            return all(isinstance(var, expected_type) for var in obj)
-        else:
-            if expected_type == list:
-                self.been_list = True
-            return isinstance(obj, expected_type)
     
     def isinstance_of_type(self, obj: Any, node: PathNode) -> bool:
         """
@@ -93,17 +83,15 @@ class NodePath:
         Returns:
             bool: Whether the object matches the expected type.
         """
-        if node.value_type == 'list':
-            return self._type_check(obj=obj, expected_type=list)
-        elif node.value_type == 'dict':
-            return self._type_check(obj=obj, expected_type=dict)
-        elif node.value_type == 'int':
-            return self._type_check(obj=obj, expected_type=int)
-        elif node.value_type == 'str':
-            return self._type_check(obj=obj, expected_type=str)
-        elif node.value_type == 'bool':
-            return self._type_check(obj=obj, expected_type=bool)
-        else:
+        expected_type = _TYPE_MAPPING.get(node.value_type)
+        if expected_type is None:
             raise ValueError(
                 'Argument type_value specified for node is invalid'
             )
+
+        if self.been_list:
+            return all(isinstance(var, expected_type) for var in obj)
+        else:
+            if expected_type == list:
+                self.been_list = True
+            return isinstance(obj, expected_type)
