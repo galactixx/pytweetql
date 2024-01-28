@@ -1,5 +1,6 @@
 from pytweetql.constants import GraphQLCodes
 from pytweetql import parsing
+from pytweetql.response.api_error import APIError
 from pytweetql.errors import (
     detect_api_errors,
     Error,
@@ -19,8 +20,9 @@ from pytweetql.response.user import (
     Users
 )
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 __all__ = [
+    'APIError',
     'detect_api_errors',
     'Error',
     'GraphQLCodes',

@@ -143,15 +143,7 @@ nodes_following = {
 }
 nodes_user_by_screen_name = {
     'entry': {'user': {'type': 'dict', 'children': {
-        'result': {'type': 'dict', 'children': {
-            'timeline': {'type': 'dict', 'children': {
-                'timeline': {'type': 'dict', 'children': {
-                    'instructions': {'type': 'list', 'children': {
-                        'entries': {'type': 'list', 'children': {
-                            'content': {'type': 'dict', 'children': {
-                                'itemContent': {'type': 'dict', 'children': {
-                                    'user_results': {'type': 'dict', 'children': {
-                                        'result': {'type': 'dict'}}}}}}}}}}}}}}}}}}}
+        'result': {'type': 'dict'}}}
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},

@@ -15,7 +15,7 @@ parameters_user_by_screen_name = [
     (
     './tests/data/user_by_screen_name.json',
     200,
-    5
+    2
     )
 ]
 
