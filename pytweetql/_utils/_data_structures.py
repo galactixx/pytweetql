@@ -76,6 +76,7 @@ class TweetInfo:
         created (str): The UTC date the tweet was created.
         content (str): The text content of the tweet.
         language (str): The language of the text content.
+        tweet_url (str): The URL of the tweet.
         quote_count (int): The number of times the tweet has been quoted.
         reply_count (int): The number of replies on the tweet.
         retweet_count (int): The number of times the tweet has been retweeted.
@@ -89,6 +90,7 @@ class TweetInfo:
     created: str
     content: str
     language: str
+    tweet_url: str
     quote_count: int
     reply_count: int
     retweet_count: int

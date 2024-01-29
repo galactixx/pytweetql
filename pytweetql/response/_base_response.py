@@ -56,6 +56,11 @@ class BaseTweet:
         return self._tweet.get('lang')
     
     @property
+    def _tweet_url(self) -> str:
+        """The URL of the tweet."""
+        return f'https://twitter.com/{self._user_name}/status/{self._tweet_id}'
+    
+    @property
     def _quote_count(self) -> int:
         """The number of times the tweet has been quoted."""
         return verify_integer(integer=self._tweet.get('quote_count'))

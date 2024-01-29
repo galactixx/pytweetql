@@ -47,6 +47,7 @@ class Tweet(BaseTweet):
             created=self._created_date,
             content=self._content,
             language=self._language,
+            tweet_url=self._tweet_url,
             is_quote=self._is_quote,
             is_retweet=self._is_retweet,
             quote_count=self._quote_count,
@@ -93,6 +94,11 @@ class Tweet(BaseTweet):
     def language(self) -> str:
         """The language of the text content."""
         return self._tweet.language
+    
+    @property
+    def tweet_url(self) -> str:
+        """The URL of the tweet."""
+        return self._tweet.tweet_url
     
     @property
     def quote_count(self) -> int:
