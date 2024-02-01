@@ -20,7 +20,7 @@ from pytweetql.response.user import (
     Users
 )
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 __all__ = [
     'APIError',
     'detect_api_errors',

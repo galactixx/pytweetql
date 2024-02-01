@@ -137,15 +137,20 @@ class Tweets(DirectPathValidation):
     """
     def __init__(
         self,
+        endpoint: str,
         response: List[dict],
-        schema: Schema,
-        endpoint: str
+        users: List[str],
+        schema: Schema
     ):
         super().__init__(response=response)
         self._schema = schema
         self.endpoint = endpoint
 
         self._tweets = self._parse_tweets()
+        if users:
+            self._tweets = [
+                tweet for tweet in self._tweets if tweet.user_id in users
+            ]
 
     @property
     def tweets(self) -> List[Tweet]:

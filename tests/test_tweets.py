@@ -23,7 +23,7 @@ parameters_list_latest_tweets = [
     (
     './tests/data/list_latest_tweets.json',
     200,
-    4
+    12
     )
 ]
 

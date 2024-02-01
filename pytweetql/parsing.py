@@ -1,3 +1,5 @@
+from typing import List
+
 from pytweetql.response.twitterlist import TwitterLists
 from pytweetql.validation._nodes import *
 from pytweetql._typing import APIResponse
@@ -103,45 +105,49 @@ def parse_users_by_screen_name(response: APIResponse) -> Users:
     )
 
 
-def parse_tweet_result_by_id(response: APIResponse) -> Tweets:
+def parse_tweet_result_by_id(response: APIResponse, users: List[str] = []) -> Tweets:
     """
     Parse tweet data from the TweetResultByRestId endpoint.
     """
     return Tweets(
         response=response,
         schema=NODES_TWEET_RESULT_BY_ID,
-        endpoint='TweetResultByRestId'
+        endpoint='TweetResultByRestId',
+        users=users
     )
 
 
-def parse_user_tweets(response: APIResponse) -> Tweets:
+def parse_user_tweets(response: APIResponse, users: List[str] = []) -> Tweets:
     """
     Parse tweet data from the UserTweets endpoint.
     """
     return Tweets(
         response=response,
         schema=NODES_USER_TWEETS,
-        endpoint='UserTweets'
+        endpoint='UserTweets',
+        users=users
     )
 
 
-def parse_create_tweet(response: APIResponse) -> Tweets:
+def parse_create_tweet(response: APIResponse, users: List[str] = []) -> Tweets:
     """
     Parse tweet data from the CreateTweet endpoint.
     """
     return Tweets(
         response=response,
         schema=NODES_CREATE_TWEET,
-        endpoint='CreateTweet'
+        endpoint='CreateTweet',
+        users=users
     )
 
 
-def parse_list_latest_tweets(response: APIResponse) -> Tweets:
+def parse_list_latest_tweets(response: APIResponse, users: List[str] = []) -> Tweets:
     """
     Parse tweet data from the ListLatestTweetsTimeline endpoint.
     """
     return Tweets(
         response=response,
         schema=NODES_LIST_LATEST_TWEETS,
-        endpoint='ListLatestTweetsTimeline'
+        endpoint='ListLatestTweetsTimeline',
+        users=users
     )
