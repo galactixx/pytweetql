@@ -3,7 +3,7 @@ import copy
 
 from pytweetql.errors import *
 from pytweetql.validation._base_validation import BaseValidation
-from pytweetql.validation._nodes import nodes_error_api
+from pytweetql.validation._nodes import NODES_ERROR_API
 from pytweetql._typing import (
     APIResponse, 
     Schema
@@ -67,34 +67,11 @@ class DirectPathValidation(BaseValidation):
         
     def _extract_api_errors(self) -> None:
         """Extract all API errors from response."""
-        errors = self.extract_objects(schema=nodes_error_api)
+        errors = self.extract_objects(schema=NODES_ERROR_API)
         for error in errors:
             self._error(
                 error=generate_api_error(**error)
             )
-
-    def _if_been_list(
-        self, 
-        response: List[dict], 
-        current_node: PathNode
-    ) -> list:
-        """
-        Iterate through a list object to find the next key in the path.
-
-        Args:
-            responses (List[dict]): A list of response dictionaries.
-            current_node (PathNode): The active node in linked list.
-
-        Returns:
-            list: A list of objects found.
-        """
-        key_search = []
-        for item in response:
-            if isinstance(item, dict):
-                list_value = item.get(current_node.key)
-                if list_value is not None:
-                    key_search.append(list_value)
-        return key_search
 
     def extract_objects(self, schema: Schema) -> Generator[Any, None, None]:
         """
@@ -115,14 +92,14 @@ class DirectPathValidation(BaseValidation):
         # Validate schema
         entries = self._validate_schema(
             node_path=node_path_entry,
-            responses=self.response
+            response=self.response
         )
         for entry in entries:
             entry_results = {}
             for arg, schema in schema_objects.items():
                 results = self._validate_schema(
                     node_path=_derive_node_path(schema=schema),
-                    responses=[entry]
+                    response=[entry]
                 )
                 for result in results:
                     entry_results.update({arg: result})
@@ -131,57 +108,58 @@ class DirectPathValidation(BaseValidation):
     def _validate_schema(
         self,
         node_path: NodePath,
-        responses: List[dict]
+        response: List[dict]
     ) -> Generator[Any, None, None]:
         """
         Validate schema of response by navigating through linked list key path.
         
         Args:
-            responses (List[dict]): A list of response dictionaries.
+            response (List[dict]): A list of response dictionaries.
             node_path (NodePath): A linked list of PathNodes from schema.
 
         Returns:
             Generator[Any, None, None]: Generator that yields any data type.
         """
-        for resp in responses:
-            current_node = node_path.head
-            while current_node is not None:
+        current_node = node_path.head
+        while current_node is not None:
 
-                # Find the current node key in response
-                obj = None
+            # Find the current node key in response
+            obj = []
+            if isinstance(response, list):
+                for item in response:
+                    if isinstance(item, dict):
+                        list_value = item.get(current_node.key)
+                        if list_value is not None:
+                            obj.append(list_value)
+
+            # Match type of found value to expected type
+            if obj and node_path.isinstance_of_type(
+                obj=obj, 
+                node=current_node
+            ):
+                response = copy.copy(obj)
+
+                # If we have encountered a list previously,
+                # then extract all objects from the result
                 if node_path.been_list:
-                    obj = self._if_been_list(
-                        response=resp, 
-                        current_node=current_node
-                    )
-                elif isinstance(resp, dict):
-                    obj = resp.get(current_node.key)
+                    response = extract_dicts_from_list(source=response)
 
-                # Match type of found value to expected type
-                if node_path.isinstance_of_type(
-                    obj=obj, 
-                    node=current_node
-                ):
-                    resp = copy.copy(obj)
-                    previouse_node = current_node.prev
-
-                    # If value of previous node was a list,
-                    # then extract all objects from the result
-                    if (
-                        previouse_node is not None and 
-                        previouse_node.value_type == 'list'
-                    ):
-                        resp = extract_dicts_from_list(source=resp) 
-
-                    # If current node is a result, then add to entries and break
-                    if not current_node.next:
-                        if isinstance(resp, list):
-                            for record in resp:
-                                yield record
-                        else:
-                            yield resp
-                        break
+                if isinstance(current_node.children, list):
+                    for child in current_node.children:
+                        records = self._validate_schema(
+                            node_path=NodePath.from_child_node(node=child),
+                            response=response
+                        )
+                        for record in records:
+                            yield record
+                elif not current_node.next:
+                    if isinstance(response, list):
+                        for record in response:
+                            yield record
                     else:
-                        current_node = current_node.next
-                else:
+                        yield response
                     break
+                else:
+                    current_node = current_node.next
+            else:
+                break

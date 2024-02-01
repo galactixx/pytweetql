@@ -133,19 +133,16 @@ class Tweets(DirectPathValidation):
     Args:
         response (APIResponse): The response from a Twitter API.
         schema (Schema): The schema used to validate the API response.
-        remove_promotions (bool): Whether to remove promoted tweets from parsing.
         endpoint (str): The name the the GraphQL endpoint.
     """
     def __init__(
         self,
         response: List[dict],
         schema: Schema,
-        remove_promotions: bool,
         endpoint: str
     ):
         super().__init__(response=response)
         self._schema = schema
-        self._remove_promotions = remove_promotions
         self.endpoint = endpoint
 
         self._tweets = self._parse_tweets()

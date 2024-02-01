@@ -58,7 +58,7 @@ class BaseTweet:
     @property
     def _tweet_url(self) -> str:
         """The URL of the tweet."""
-        return f'https://twitter.com/{self._user_name}/status/{self._tweet_id}'
+        return f'https://twitter.com/{self._user_screen_name}/status/{self._tweet_id}'
     
     @property
     def _quote_count(self) -> int:
@@ -83,7 +83,8 @@ class BaseTweet:
     @property
     def _is_retweet(self) -> bool:
         """Boolean indicating whether it is a retweet."""
-        return verify_boolean(boolean=self._tweet.get('retweeted'))
+        retweet_status = self._tweet.get('retweeted_status_result')
+        return retweet_status is not None
 
 
 class BaseUser:

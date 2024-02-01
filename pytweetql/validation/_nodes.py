@@ -1,11 +1,11 @@
-nodes_error_api = {
+NODES_ERROR_API = {
     'entry': {'errors': {'type': 'list'}},
     'objects': {
         'code': {'code': {'type': 'int'}},
         'message': {'message': {'type': 'str'}}
     }
 }
-nodes_list_add_member = {
+NODES_LIST_ADD_MEMBER = {
     'entry': {'list': {'type': 'dict', 'children': {
         'user_results': {'type': 'dict', 'children': {
             'result': {'type': 'dict'}}}}}
@@ -15,7 +15,7 @@ nodes_list_add_member = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_list_remove_member = {
+NODES_LIST_REMOVE_MEMBER = {
     'entry': {'list': {'type': 'dict', 'children': {
         'user_results': {'type': 'dict', 'children': {
             'result': {'type': 'dict'}}}}}
@@ -25,7 +25,7 @@ nodes_list_remove_member = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_create_tweet = {
+NODES_CREATE_TWEET = {
     'entry': {'create_tweet': {'type': 'dict', 'children': {
         'tweet_results': {'type': 'dict', 'children': {
             'result': {'type': 'dict'}}}}}
@@ -44,7 +44,7 @@ nodes_create_tweet = {
         'source': {'source': {'type': 'str'}}
     }
 }
-nodes_list_create = {
+NODES_LIST_CREATE = {
     'entry': {'list': {'type': 'dict'}},
     'objects': {
         'name': {'name': {'type': 'str'}},
@@ -55,16 +55,22 @@ nodes_list_create = {
         'mode': {'mode': {'type': 'str'}},
     }
 }
-nodes_list_latest_tweets = {
+NODES_LIST_LATEST_TWEETS = {
     'entry': {'list': {'type': 'dict', 'children': {
         'tweets_timeline': {'type': 'dict', 'children': {
             'timeline': {'type': 'dict', 'children': {
                 'instructions': {'type': 'list', 'children': {
                     'entries': {'type': 'list', 'children': {
-                        'content': {'type': 'dict', 'children': {
-                            'itemContent': {'type': 'dict', 'children': {
+                        'content': {'type': 'dict', 'children': [
+                            {'itemContent': {'type': 'dict', 'children': {
                                 'tweet_results': {'type': 'dict', 'children': {
-                                    'result': {'type': 'dict'}}}}}}}}}}}}}}}}}
+                                    'result': {'type': 'dict'}}}}}},
+                            {'items': {'type': 'list', 'children': {
+                                'item': {'type': 'dict', 'children': {
+                                    'itemContent': {'type': 'dict', 'children': {
+                                        'tweet_results': {'type': 'dict', 'children': {
+                                            'result': {'type': 'dict'}}}}}}}}}}
+                        ]}}}}}}}}}}}
     },
     'objects': {
         'user': {'core': {'type': 'dict', 'children': {
@@ -80,7 +86,7 @@ nodes_list_latest_tweets = {
         'source': {'source': {'type': 'str'}}
     }
 }
-nodes_user_tweets = {
+NODES_USER_TWEETS = {
     'entry': {'user': {'type': 'dict', 'children': {
         'result': {'type': 'dict', 'children': {
             'timeline_v2': {'type': 'dict', 'children': {
@@ -106,7 +112,7 @@ nodes_user_tweets = {
         'source': {'source': {'type': 'str'}}
     }
 }
-nodes_tweet_result_by_id = {
+NODES_TWEET_RESULT_BY_ID = {
     'entry': {'tweetResult': {'type': 'dict', 'children': {
         'result': {'type': 'dict'}}}
     },
@@ -124,7 +130,7 @@ nodes_tweet_result_by_id = {
         'source': {'source': {'type': 'str'}}
     }
 }
-nodes_following = {
+NODES_FOLLOWING = {
     'entry': {'user': {'type': 'dict', 'children': {
         'result': {'type': 'dict', 'children': {
             'timeline': {'type': 'dict', 'children': {
@@ -141,7 +147,7 @@ nodes_following = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_user_by_screen_name = {
+NODES_USER_BY_SCREEN_NAME = {
     'entry': {'user': {'type': 'dict', 'children': {
         'result': {'type': 'dict'}}}
     },
@@ -150,7 +156,7 @@ nodes_user_by_screen_name = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_list_members = {
+NODES_LIST_MEMBERS = {
     'entry': {'list': {'type': 'dict', 'children': {
         'members_timeline': {'type': 'dict', 'children': {
             'timeline': {'type': 'dict', 'children': {
@@ -166,7 +172,7 @@ nodes_list_members = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_user_by_rest_id = {
+NODES_USER_BY_REST_ID = {
     'entry': {'user': {'type': 'dict', 'children': {
         'result': {'type': 'dict'}}}
     },
@@ -175,7 +181,7 @@ nodes_user_by_rest_id = {
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
-nodes_users_by_rest_ids = {
+NODES_USERS_BY_REST_IDS = {
     'entry': {'users': {'type': 'list', 'children': {
         'result': {'type': 'dict'}}}
     },

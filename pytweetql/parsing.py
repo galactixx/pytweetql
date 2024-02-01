@@ -11,7 +11,7 @@ def parse_api_errors(response: APIResponse) -> APIErrors:
     """
     return APIErrors(
         response=response,
-        schema=nodes_error_api
+        schema=NODES_ERROR_API
     )
 
 
@@ -21,7 +21,7 @@ def parse_create_list(response: APIResponse) -> TwitterLists:
     """
     return TwitterLists(
         response=response,
-        schema=nodes_list_create,
+        schema=NODES_LIST_CREATE,
         endpoint='CreateList'
     )
 
@@ -32,7 +32,7 @@ def parse_following(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_following,
+        schema=NODES_FOLLOWING,
         endpoint='Following'
     )
 
@@ -43,7 +43,7 @@ def parse_list_remove_member(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_list_remove_member,
+        schema=NODES_LIST_REMOVE_MEMBER,
         endpoint='ListRemoveMember'
     )
 
@@ -54,7 +54,7 @@ def parse_list_add_member(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_list_add_member,
+        schema=NODES_LIST_ADD_MEMBER,
         endpoint='ListAddMember'
     )
 
@@ -65,7 +65,7 @@ def parse_user_by_id(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_user_by_rest_id,
+        schema=NODES_USER_BY_REST_ID,
         endpoint='UserByRestId'
     )
 
@@ -76,7 +76,7 @@ def parse_users_by_ids(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_users_by_rest_ids,
+        schema=NODES_USERS_BY_REST_IDS,
         endpoint='UsersByRestIds'
     )
 
@@ -87,7 +87,7 @@ def parse_list_members(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_list_members,
+        schema=NODES_LIST_MEMBERS,
         endpoint='ListMembers'
     )
 
@@ -98,66 +98,50 @@ def parse_users_by_screen_name(response: APIResponse) -> Users:
     """
     return Users(
         response=response,
-        schema=nodes_user_by_screen_name,
+        schema=NODES_USER_BY_SCREEN_NAME,
         endpoint='UserByScreenName'
     )
 
 
-def parse_tweet_result_by_id(
-    response: APIResponse, 
-    remove_promotions: bool = True
-) -> Tweets:
+def parse_tweet_result_by_id(response: APIResponse) -> Tweets:
     """
     Parse tweet data from the TweetResultByRestId endpoint.
     """
     return Tweets(
         response=response,
-        schema=nodes_tweet_result_by_id,
-        remove_promotions=remove_promotions,
+        schema=NODES_TWEET_RESULT_BY_ID,
         endpoint='TweetResultByRestId'
     )
 
 
-def parse_user_tweets(
-    response: APIResponse, 
-    remove_promotions: bool = True
-) -> Tweets:
+def parse_user_tweets(response: APIResponse) -> Tweets:
     """
     Parse tweet data from the UserTweets endpoint.
     """
     return Tweets(
         response=response,
-        schema=nodes_user_tweets,
-        remove_promotions=remove_promotions,
+        schema=NODES_USER_TWEETS,
         endpoint='UserTweets'
     )
 
 
-def parse_create_tweet(
-    response: APIResponse, 
-    remove_promotions: bool = True
-) -> Tweets:
+def parse_create_tweet(response: APIResponse) -> Tweets:
     """
     Parse tweet data from the CreateTweet endpoint.
     """
     return Tweets(
         response=response,
-        schema=nodes_create_tweet,
-        remove_promotions=remove_promotions,
+        schema=NODES_CREATE_TWEET,
         endpoint='CreateTweet'
     )
 
 
-def parse_list_latest_tweets(
-    response: APIResponse, 
-    remove_promotions: bool = True
-) -> Tweets:
+def parse_list_latest_tweets(response: APIResponse) -> Tweets:
     """
     Parse tweet data from the ListLatestTweetsTimeline endpoint.
     """
     return Tweets(
         response=response,
-        schema=nodes_list_latest_tweets,
-        remove_promotions=remove_promotions,
+        schema=NODES_LIST_LATEST_TWEETS,
         endpoint='ListLatestTweetsTimeline'
     )
