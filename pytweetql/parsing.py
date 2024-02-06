@@ -100,9 +100,20 @@ def parse_list_members(response: APIResponse) -> Users:
     )
 
 
-def parse_users_by_screen_name(response: APIResponse) -> Users:
+def parse_user_by_screen_name(response: APIResponse) -> SingleUser:
     """
-    Parse user data from the UserByScreenName endpoint.
+    Parse singular user data from the UserByScreenName endpoint.
+    """
+    return SingleUser(
+        response=response,
+        schema=NODES_USER_BY_SCREEN_NAME,
+        endpoint='UserByScreenName'
+    )
+
+
+def parse_users_by_screen_names(response: APIResponse) -> Users:
+    """
+    Parse multiple user data from the UserByScreenName endpoint.
     """
     return Users(
         response=response,
