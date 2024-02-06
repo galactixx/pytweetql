@@ -87,9 +87,9 @@ class TwitterList:
         return self._list.is_following
 
 
-class TwitterLists(DirectPathValidation):
+class SingleTwitterList(DirectPathValidation):
     """
-    Parsing for a Twitter list API response.
+    Parsing for a single Twitter list API response.
 
     Args:
         response (APIResponse): The response from a Twitter API.
@@ -105,29 +105,24 @@ class TwitterLists(DirectPathValidation):
         super().__init__(response=response)
         self._schema = schema
         self.endpoint = endpoint
-
-        self._lists = self._parse_lists()
+        self._twitter_list = self._parse_list()
     
     @property
-    def twitter_lists(self) -> List[TwitterList]:
-        """Returns all the parsed Twitter lists."""
-        return self._lists
-
-    @property
-    def num_lists(self) -> int:
-        """The number of Twitter lists parsed in response."""
-        return len(self._lists)
+    def twitter_list(self) -> TwitterList:
+        """Returns Twitter list parsed from response."""
+        return self._twitter_list
 
     @error_check_output
-    def _parse_lists(self) -> List[TwitterList]:
+    def _parse_list(self) -> TwitterList:
         """
         Parse each individual Twitter list detail from response.
 
         Returns:
-            List[TwitterList]: A list of TwitterList classes, one for each list detected.
+            TwitterList: A TwitterList classe, containing info for the Twitter list detected.
         """
-        return [
-            TwitterList(**entry) for entry in self.extract_objects(
-                schema=self._schema
-            )
-        ]
+        try:
+            return TwitterList(**next(
+                self.extract_objects(schema=self._schema)
+            ))
+        except StopIteration:
+            return

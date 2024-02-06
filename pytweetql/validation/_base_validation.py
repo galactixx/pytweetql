@@ -6,10 +6,8 @@ from pytweetql._utils._utils import extract_dicts_from_list
 from pytweetql._typing import APIResponse
 
 def error_check_output(func) -> None:
-    """
-    Decorator to add invalid parser error.
-    """
-    def wrapper(self, *args, **kwargs):
+    """Decorator to add invalid parser error."""
+    def wrapper(self: 'BaseStatus', *args, **kwargs):
         data = func(self, *args, **kwargs)
         if not data and not self.errors:
             self._error(error=ERROR_PARSER)

@@ -42,7 +42,7 @@ class BaseTweet:
 
     @property
     def _created_date(self) -> str:
-        """The UTC date the tweet was created."""
+        """The UTC ISO format date the tweet was created."""
         return verify_datetime(created=self._tweet.get('created_at'))
         
     @property
@@ -93,10 +93,12 @@ class BaseUser:
 
     Args:
         user (str): The raw user ID in each user response.
+        verified (bool): Boolean indicating verification status of user.
         user_info (dict): The raw user info section in each user response.
     """
-    def __init__(self, user: str, user_info: dict):
+    def __init__(self, user: str, verified: bool, user_info: dict):
         self._user = user
+        self._verified = verified
         self._user_info = user_info
 
     @property
@@ -147,4 +149,4 @@ class BaseUser:
     @property
     def _is_verified(self) -> bool:
         """Boolean indicating whether the user is verified."""
-        return verify_boolean(boolean=self._user_info.get('verified'))
+        return verify_boolean(boolean=self._verified)

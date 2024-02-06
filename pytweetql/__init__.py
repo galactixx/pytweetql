@@ -1,6 +1,11 @@
 from pytweetql.constants import GraphQLCodes
 from pytweetql import parsing
 from pytweetql.response.api_error import APIError
+from pytweetql._utils._data_structures import (
+    ListInfo,
+    TweetInfo,
+    UserInfo
+)
 from pytweetql.errors import (
     detect_api_errors,
     Error,
@@ -9,18 +14,20 @@ from pytweetql.errors import (
 )
 from pytweetql.response.twitterlist import (
     TwitterList, 
-    TwitterLists
+    SingleTwitterList
 )
 from pytweetql.response.tweet import (
-    Tweet, 
+    SingleTweet,
+    Tweet,
     Tweets
 )
 from pytweetql.response.user import (
-    User, 
+    SingleUser,
+    User,
     Users
 )
 
-__version__ = '0.7.0'
+__version__ = '0.8.0'
 __all__ = [
     'APIError',
     'detect_api_errors',
@@ -28,11 +35,16 @@ __all__ = [
     'GraphQLCodes',
     'is_api_error_specific',
     'is_api_error',
+    'ListInfo',
     'parsing',
+    'SingleTweet',
+    'SingleTwitterList',
+    'SingleUser',
     'Tweet', 
     'Tweets',
+    'TweetInfo',
     'TwitterList', 
-    'TwitterLists',
-    'User', 
+    'User',
+    'UserInfo', 
     'Users'
 ]

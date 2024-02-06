@@ -1,20 +1,33 @@
 import pytest
 
 from tests.utils import load_json_file
-from pytweetql import parsing
+from pytweetql import (
+    ListInfo,
+    parsing
+)
 
 parameters = [
     (
     './tests/data/create_list.json',
     200,
-    1
+    ListInfo(
+        name='List name',
+        description='Description',
+        list_id='1749177315664265474',
+        mode='Private',
+        member_count=0,
+        is_following=True
+    )
     )
 ]
 
-@pytest.mark.parametrize('path, status_code, num_lists', parameters)
-def test_create_list(path, status_code, num_lists) -> None:
+@pytest.mark.parametrize(
+    'path, status_code, twitter_list',
+    parameters
+)
+def test_create_list(path, status_code, twitter_list) -> None:
     """Test CreateList response."""
     response = load_json_file(path=path)
-    lists = parsing.parse_create_list(response=response)
-    assert lists.status_code == status_code
-    assert lists.num_lists == num_lists
+    single_list = parsing.parse_create_list(response=response)
+    assert single_list.status_code == status_code
+    assert single_list.twitter_list.twitter_list == twitter_list

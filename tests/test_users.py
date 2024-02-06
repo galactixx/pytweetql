@@ -1,7 +1,10 @@
 import pytest
 
 from tests.utils import load_json_file
-from pytweetql import parsing
+from pytweetql import (
+    parsing,
+    UserInfo
+)
 
 parameters_following = [
     (
@@ -31,7 +34,18 @@ parameters_user_by_id = [
     (
     './tests/data/user_by_rest_id.json',
     200,
-    1
+    UserInfo(
+        user_id='44196397',
+        user_name='Elon Musk',
+        user_screen_name='elonmusk',
+        profile_description='(CTO) Chief Troll Officer',
+        created='2009-06-02T20:12:29+00:00',
+        location='Trōllheim',
+        favourites_count=40415,
+        followers_count=169898966,
+        statuses_count=36635,
+        is_verified=True
+    )
     )
 ]
 
@@ -47,7 +61,18 @@ parameters_list_add_member = [
     (
     './tests/data/list_add_member.json',
     200,
-    1
+    UserInfo(
+        user_id='1744931660808720384',
+        user_name='Plutarch Glicia',
+        user_screen_name='dandywarlock2',
+        profile_description='Lets go to Mars!',
+        created='2024-01-10T03:58:29+00:00',
+        location='Houston',
+        favourites_count=0,
+        followers_count=0,
+        statuses_count=0,
+        is_verified=False
+    )
     )
 ]
 
@@ -55,7 +80,18 @@ parameters_list_remove_member = [
     (
     './tests/data/list_remove_member.json',
     200,
-    1
+    UserInfo(
+        user_id='1744931660808720384',
+        user_name='Plutarch Glicia',
+        user_screen_name='dandywarlock2',
+        profile_description='Lets go to Mars!',
+        created='2024-01-10T03:58:29+00:00',
+        location='Houston',
+        favourites_count=0,
+        followers_count=0,
+        statuses_count=0,
+        is_verified=False
+    )
     )
 ]
 
@@ -85,15 +121,15 @@ def test_list_members(path, status_code, num_users) -> None:
 
 
 @pytest.mark.parametrize(
-    'path, status_code, num_users', 
+    'path, status_code, user', 
     parameters_user_by_id
 )
-def test_user_by_id(path, status_code, num_users) -> None:
+def test_user_by_id(path, status_code, user) -> None:
     """Test UserByRestId responses."""
     response = load_json_file(path=path)
-    users = parsing.parse_user_by_id(response=response)
-    assert users.status_code == status_code
-    assert users.num_users == num_users
+    single_user = parsing.parse_user_by_id(response=response)
+    assert single_user.status_code == status_code
+    assert single_user.user.user == user
 
 
 @pytest.mark.parametrize(
@@ -121,24 +157,24 @@ def test_following(path, status_code, num_users) -> None:
 
 
 @pytest.mark.parametrize(
-    'path, status_code, num_users', 
+    'path, status_code, user', 
     parameters_list_add_member
 )
-def test_list_add_member(path, status_code, num_users) -> None:
+def test_list_add_member(path, status_code, user) -> None:
     """Test ListAddMember responses."""
     response = load_json_file(path=path)
-    users = parsing.parse_list_add_member(response=response)
-    assert users.status_code == status_code
-    assert users.num_users == num_users
+    single_user = parsing.parse_list_add_member(response=response)
+    assert single_user.status_code == status_code
+    assert single_user.user.user == user
 
 
 @pytest.mark.parametrize(
-    'path, status_code, num_users', 
+    'path, status_code, user', 
     parameters_list_remove_member
 )
-def test_list_remove_member(path, status_code, num_users) -> None:
+def test_list_remove_member(path, status_code, user) -> None:
     """Test ListRemoveMember responses."""
     response = load_json_file(path=path)
-    users = parsing.parse_list_remove_member(response=response)
-    assert users.status_code == status_code
-    assert users.num_users == num_users
+    single_user = parsing.parse_list_remove_member(response=response)
+    assert single_user.status_code == status_code
+    assert single_user.user.user == user

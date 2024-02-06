@@ -12,10 +12,16 @@ class User(BaseUser):
     
     Args:
         user (str): The raw user ID in each user response.
+        verified (bool): Boolean indicating verification status of user.
         user_info (dict): The raw user info section in each user response.
     """
-    def __init__(self, user: dict, user_info: dict):
-        super().__init__(user=user, user_info=user_info)
+    def __init__(
+        self,
+        user: dict,
+        verified: bool,
+        user_info: dict
+    ):
+        super().__init__(user=user, verified=verified, user_info=user_info)
 
         self._user = self._parse_user()
 
@@ -113,7 +119,6 @@ class Users(DirectPathValidation):
         super().__init__(response=response)
         self._schema = schema
         self.endpoint = endpoint
-
         self._users = self._parse_users()
 
     @property
@@ -139,3 +144,44 @@ class Users(DirectPathValidation):
                 schema=self._schema
             )
         ]
+    
+
+class SingleUser(DirectPathValidation):
+    """
+    Parsing for a single user API response.
+
+    Args:
+        response (APIResponse): The response from a Twitter API.
+        schema (Schema): The schema used to validate the API response.
+        endpoint (str): The name the the GraphQL endpoint.
+    """
+    def __init__(
+        self,
+        response: List[dict], 
+        schema: Schema, 
+        endpoint: str
+    ):
+        super().__init__(response=response)
+        self._schema = schema
+        self.endpoint = endpoint
+        self._user = self._parse_user()
+    
+    @property
+    def user(self) -> User:
+        """Returns user parsed from response."""
+        return self._user
+
+    @error_check_output
+    def _parse_user(self) -> User:
+        """
+        Parse each individual user detail from response.
+
+        Returns:
+            User: A User classe, containing info for the user detected.
+        """
+        try:
+            return User(**next(
+                self.extract_objects(schema=self._schema)
+            ))
+        except StopIteration:
+            return

@@ -12,6 +12,7 @@ NODES_LIST_ADD_MEMBER = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -22,6 +23,7 @@ NODES_LIST_REMOVE_MEMBER = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -93,10 +95,16 @@ NODES_USER_TWEETS = {
                 'timeline': {'type': 'dict', 'children': {
                     'instructions': {'type': 'list', 'children': {
                         'entries': {'type': 'list', 'children': {
-                            'content': {'type': 'dict', 'children': {
-                                'itemContent': {'type': 'dict', 'children': {
+                            'content': {'type': 'dict', 'children': [
+                                {'itemContent': {'type': 'dict', 'children': {
                                     'tweet_results': {'type': 'dict', 'children': {
-                                        'result': {'type': 'dict'}}}}}}}}}}}}}}}}}}}
+                                        'result': {'type': 'dict'}}}}}},
+                                {'items': {'type': 'list', 'children': {
+                                    'item': {'type': 'dict', 'children': {
+                                        'itemContent': {'type': 'dict', 'children': {
+                                            'tweet_results': {'type': 'dict', 'children': {
+                                                'result': {'type': 'dict'}}}}}}}}}}
+                            ]}}}}}}}}}}}}}
     },
     'objects': {
         'user': {'core': {'type': 'dict', 'children': {
@@ -144,6 +152,7 @@ NODES_FOLLOWING = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -153,6 +162,7 @@ NODES_USER_BY_SCREEN_NAME = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -169,6 +179,7 @@ NODES_LIST_MEMBERS = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -178,6 +189,7 @@ NODES_USER_BY_REST_ID = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }
@@ -187,6 +199,7 @@ NODES_USERS_BY_REST_IDS = {
     },
     'objects': {
         'user': {'rest_id': {'type': 'str'}},
+        'verified': {'is_blue_verified': {'type': 'bool'}},
         'user_info': {'legacy': {'type': 'dict'}}
     }
 }

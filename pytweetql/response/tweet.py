@@ -1,4 +1,7 @@
 from typing import List
+from datetime import datetime
+
+from dateutil.parser import isoparse
 
 from pytweetql.response._base_response import BaseTweet
 from pytweetql.validation.validation import DirectPathValidation
@@ -82,9 +85,25 @@ class Tweet(BaseTweet):
     
     @property
     def created_date(self) -> str:
-        """The UTC date the tweet was created."""
+        """The UTC ISO format date the tweet was created."""
         return self._tweet.created
     
+    @property
+    def created_datetime(self) -> datetime:
+        """The ISO format created date converted to datetime."""
+        if isinstance(self.created_date, str):
+            return datetime.fromisoformat(
+                self.created_date.rstrip('Z').replace('+00:00', '')
+            )
+        
+    @property
+    def created_unix_timestamp(self) -> int:
+        """The ISO format created date converted to Unix timestamp."""
+        if isinstance(self.created_date, str):
+            return int(
+                isoparse(self.created_date).timestamp()
+            )
+
     @property
     def content(self) -> str:
         """The text content of the tweet."""
@@ -137,15 +156,14 @@ class Tweets(DirectPathValidation):
     """
     def __init__(
         self,
+        response: List[dict], 
+        schema: Schema, 
         endpoint: str,
-        response: List[dict],
-        users: List[str],
-        schema: Schema
+        users: List[str]
     ):
         super().__init__(response=response)
         self._schema = schema
         self.endpoint = endpoint
-
         self._tweets = self._parse_tweets()
         if users:
             self._tweets = [
@@ -175,3 +193,44 @@ class Tweets(DirectPathValidation):
                 schema=self._schema
             )
         ]
+    
+
+class SingleTweet(DirectPathValidation):
+    """
+    Parsing for a single tweet API response.
+
+    Args:
+        response (APIResponse): The response from a Twitter API.
+        schema (Schema): The schema used to validate the API response.
+        endpoint (str): The name the the GraphQL endpoint.
+    """
+    def __init__(
+        self,
+        response: List[dict], 
+        schema: Schema, 
+        endpoint: str,
+    ):
+        super().__init__(response=response)
+        self._schema = schema
+        self.endpoint = endpoint
+        self._tweet = self._parse_tweet()
+    
+    @property
+    def tweet(self) -> Tweet:
+        """Returns tweet parsed from response."""
+        return self._tweet
+
+    @error_check_output
+    def _parse_tweet(self) -> Tweet:
+        """
+        Parse each individual tweet detail from response.
+
+        Returns:
+            Tweet: A Tweet class, containing info for the tweet detected.
+        """
+        try:
+            return Tweet(**next(
+                self.extract_objects(schema=self._schema)
+            ))
+        except StopIteration:
+            return
