@@ -103,7 +103,7 @@ parameters_list_remove_member = [
 def test_user_by_screen_name(path, status_code, num_users) -> None:
     """Test UserByScreenName responses."""
     response = load_json_file(path=path)
-    users = parsing.parse_users_by_screen_name(response=response)
+    users = parsing.parse_users_by_screen_names(response=response)
     assert users.status_code == status_code
     assert users.num_users == num_users
 

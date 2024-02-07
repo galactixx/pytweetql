@@ -97,8 +97,11 @@ NODES_USER_TWEETS = {
                         'entries': {'type': 'list', 'children': {
                             'content': {'type': 'dict', 'children': [
                                 {'itemContent': {'type': 'dict', 'children': {
-                                    'tweet_results': {'type': 'dict', 'children': {
-                                        'result': {'type': 'dict'}}}}}},
+                                    'tweet_results': {'type': 'dict', 'children': [
+                                        {'result': {'type': 'dict'}},
+                                        {'result': {'type': 'dict', 'children': {
+                                            'tweet': {'type': 'dict'}}}}
+                                ]}}}},
                                 {'items': {'type': 'list', 'children': {
                                     'item': {'type': 'dict', 'children': {
                                         'itemContent': {'type': 'dict', 'children': {

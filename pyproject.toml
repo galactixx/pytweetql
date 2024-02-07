@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytweetql"
-version = "0.9.0"
+version = "1.0.0"
 description = "Easy parsing of Twitter GraphQL API responses"
 authors = ["galactixx"]
 license = "MIT License"

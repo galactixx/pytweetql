@@ -1,6 +1,8 @@
 from typing import Any, Generator, List, Tuple
 import copy
+import logging
 
+from pytweetql._logging import logging_config
 from pytweetql.errors import *
 from pytweetql.validation._base_validation import BaseValidation
 from pytweetql.validation._nodes import NODES_ERROR_API
@@ -16,6 +18,9 @@ from pytweetql.validation._node_path import (
     NodePath,
     PathNode
 )
+
+logger = logging.getLogger(__name__)
+logging_config(logger=logger)
 
 def _derive_node_path(schema: dict) -> NodePath:
     """
@@ -103,7 +108,13 @@ class DirectPathValidation(BaseValidation):
                 )
                 for result in results:
                     entry_results.update({arg: result})
-            yield entry_results
+            
+            if all(arg in entry_results for arg in schema_objects.keys()):
+                yield entry_results
+            else:
+                logger.warning(
+                    "Entry found did not have all the expected objects, ignoring..."
+                )
 
     def _validate_schema(
         self,
