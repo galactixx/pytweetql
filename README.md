@@ -1,4 +1,8 @@
 # pytweetql
+![Tests](https://github.com/galactixx/pytweetql/actions/workflows/continuous_integration.yaml/badge.svg)
+![PyPI Downloads](https://static.pepy.tech/badge/pytweetql/month)
+![PyPI Downloads](https://static.pepy.tech/badge/pytweetql)
+
 pytweetql is a simple Python package designed for developers who work with the Twitter GraphQL API
 
 Currently it is built to parse tweet, user, and list GET responses from the Twitter GraphQL API. The function to call is based on the GraphQL endpoint. So for the UserTweets endpoint, you would import the ```parsing``` module and use the ```parse_user_tweets()``` function.
